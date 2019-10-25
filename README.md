@@ -11,8 +11,8 @@ For the moment this patch adds the 15 bonus CGs into the game. The second versio
 How to use it?
 ---------
 
-1. Move the files "ONE Eternal Patch.exe", "ONEPatchFiles" and "ONEPatchFiles.lst" into the same folder as your "one" and "one.lst" files.<br/>
-2. Launch the "ONE Eternal Patch.exe" file.<br/>
+1. Move the files "ONE_Eternal_Patch.exe", "ONE_Patch_Files" and "ONE_Patch_Files.lst" into the same folder as your "one" and "one.lst" files.<br/>
+2. Launch the "ONE_Eternal_Patch.exe" file.<br/>
 3. Choose the Japanese or English version and choose if you want to install the patch or to remove it.
 
 FAQ
@@ -31,16 +31,16 @@ The 14 standard bonus CGs were extracted from the second CD of the Limited Editi
 
 Are my old saves compatible with the patch?<br/>
 Your global save (SAVE__.LCS) is fully compatible with the patch and you can still use it to keep the progress of the CGs that you've unlocked.<br/>
-For the most standard saves, the reponse is yes and no. Each of your saves keep tracks of the position of the instruction of the last text you've seen. I've added some instructions to add the bonus CGs so if you've saved in one of the scripts I've modified you can be in trouble. It can works or it can glitches or do some weird things. If your save doesn't work I just recommend to use a walkthrough to get back where you were in the game.
+For the most standard saves, the answer is yes and no. Each of your saves keep track of the position of the instruction of the last text you've seen. I've added some instructions to add the bonus CGs so if you've saved in one of the scripts I've modified you can be in trouble. It can work or it can glitche or do some weird things. If your save doesn't work I just recommend to use a walkthrough to get back where you were in the game.
 
 I've seen a bonus CGs but it's not unlocked in the gallery?<br/>
-It's normal. All of the CGs have an ID that is saved automatically in the global save when you see one of them. I can create new IDs but none of them are designated to be saved in the global save. So, for all of the bonus CGs in the gallery, I've affected the ID of the next obligatory CG that you see in the route concerned. So you'll unlocked all the bonus CGs eventually, you just need to be patient. Hopefully, it'll be fixed in a new version.
+It's normal. All of the CGs have an ID that is saved automatically in the global save when you see one of them. I can create new IDs but none of them are designated to be saved in the global save. So, for all of the bonus CGs in the gallery, I've affected the ID of the next obligatory CG that you see in the route concerned. So you'll unlock all the bonus CGs eventually, you just need to be patient. Hopefully, it'll be fixed in a new version.
 
 Author
 ------
-Patch developped by Sep7.<br/>
+Patch developed by Sep7.<br/>
 Thanks to Sandman for his opinion on some changes.<br/>
-Thanks to the developpers of GARbro to let me use parts of their code.
+Thanks to the developers of GARbro to let me use parts of their code.
 
 Server
 ---------
