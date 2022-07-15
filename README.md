@@ -1,4 +1,4 @@
-ONE Eternal Patch v1.0
+ONE Eternal Patch v1.1
 ======
 
 About
@@ -6,14 +6,19 @@ About
 
 ONE Eternal Patch is a patch for the visual novel ONE \~Kagayaku Kisetsu e\~.<br/>
 The goal of this patch is to create an enhanced experience by implementing the new content introduced in the PS1 version of the novel.<br/>
-As of right now this patch only adds bonus CGs, future releases will allow players to remove H-scenes and also add Natsuki's route.
+As of right now this patch adds bonus CGs and allows you to partially remove the H-scenes, future releases will allow players to fully remove H-scenes and also add Natsuki's route.
 
 How to use it?
 ---------
 
-1. Move the files "ONE_Eternal_Patch.exe", "ONE_Patch_Files" and "ONE_Patch_Files.lst" into the same folder as your "one" and "one.lst" files.<br/>
+1. Move the files "ONE_Eternal_Patch_v1.1.exe", "ONE_Patch_Files" and "ONE_Patch_Files.lst" into the same folder as your "one" and "one.lst" (or "lcsebody1" and "lcsebody1.lst") files.<br/>
 2. Launch the "ONE_Eternal_Patch.exe" file.<br/>
-3. Select the Japanese or English version and choose if you want to install the patch or to remove it.
+3. Select the edition and language you're using and the content you want to have.
+
+How to know the edition I am using?
+---------
+
+Open the directory of the game, if you've files named "One.exe", "one" and "one.lst" then you've the Full Voice Edition, if you've files named "lcsebody.exe", "lcsebody1" and "lcsebody1.lst" you're using the Vista Edition.
 
 FAQ
 ---------
@@ -22,9 +27,12 @@ Are the bonus CGs worth it?<br/>
 YES.
 
 What versions of the game is this patch compatible with?<br/>
-This patch is compatible with the Full Voice Edition of the game, it works with both the Japanese and English translated version.<br/>
-I have no idea if the patch is compatible with the Vista Edition since I can't buy it on Getchu.<br/>
-I plan to add support to the Chinese and Spanish translated versions but it is not a high priority.
+This patch is compatible with the Full Voice Edition and the Vista Edition of the game, it works with both the Japanese and English translated versions.<br/>
+I plan to add support to the Chinese, Korean and Spanish translated versions but it is not a high priority.
+
+Why the patch removes the H-scenes only partially?<br/>
+This patch removes totally the H-scenes from the routes of Akane and Mio, it also removes all the HCGs from the gallery.<br/>
+The H-scenes in the 4 other routes are mandatory to get the true ending of each route that's why their removing is harder. The PS1 edition of the game makes a lot of little changes in the story to make their removing coherent with the story and I need to port these changes to remove the H-scenes completely. For the moment, I've replaced all the HCGs by black screens so you'll not see any sexual content but you'll still have to read some.
 
 Where does the CGs come from?<br/>
 The 14 standard bonus CGs were extracted from the second CD of the Limited Edition of ONE, so they're in HQ (640x480 instead of the compressed 640x240 CGs of the first CD). However, I needed to take the background CG of Misaki's house from the first CD, I used waifu2x to make it look nicer.
@@ -40,7 +48,8 @@ Author
 ------
 Patch developed by Sep7.<br/>
 Thanks to Sandman for his opinion on some changes.<br/>
-Thanks to the developers of GARbro to let me use parts of their code.
+Thanks to the developers of GARbro to let me use parts of their code.<br/>
+Thanks to Lucia for having shared with me an ISO of the Vista Edition, allowing me to make the patch compatible with it.
 
 Server
 ---------
@@ -48,3 +57,6 @@ Server
 If you want to ask questions about the patch or just want to have fun with fans of Tactics and Key, join the Tactics Discord server:
 https://discord.gg/XUfvN2p <br/>
 Spoilers are only allowed in specific channels of the server so you'll not be spoiled about anything. It's also here that I'll post the progress of this patch.
+
+You can also join the Keyverse server if you want more Tactics/Key fun!<br/>
+https://discord.gg/mFbZD7rwRb
