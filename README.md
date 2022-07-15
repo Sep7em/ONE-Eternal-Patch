@@ -44,6 +44,9 @@ For most standard saves, the answer is yes and no. Each of your saves keep track
 I've seen a bonus CGs but it's not unlocked in the gallery?<br/>
 That's normal. All of the CGs have an ID that is saved automatically in the global save when you see one of them, I can create new IDs but none of them are designated to be saved in the global save. So, for all of the bonus CGs in the gallery, I've affected the ID of the next obligatory CG that you see in the route concerned. So you'll unlock all the bonus CGs eventually, you just need to be patient. Hopefully, it'll be fixed in a new version.
 
+What is the progress of the Nayuki's route port?<br/>
+I've extracted all the scripts from this route from the PS1 game and I search someone to translate them, please contact me if you're interested.
+
 Author
 ------
 Patch developed by Sep7.<br/>
