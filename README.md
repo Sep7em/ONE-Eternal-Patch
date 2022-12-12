@@ -1,4 +1,4 @@
-ONE Eternal Patch v1.1
+ONE Eternal Patch v1.2
 ======
 
 About
