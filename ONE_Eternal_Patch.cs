@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
+using System.Drawing;
 using GameRes;
 
 namespace ONE_Eternal_Patch
@@ -13,532 +15,12 @@ namespace ONE_Eternal_Patch
         private static string inputBonusCG;
         private static string inputAAContent;
 
-        //Scripts lists
-        private static List<String> filesList_FV_OG = new List<String> { "FV_OG_CGMODEAK.SNX", "FV_OG_CGMODEMO.SNX", "FV_OG_CGMODEMS.SNX",
-            "FV_OG_CGMODEMU.SNX", "FV_OG_CGMODEMZ.SNX", "FV_OG_CGMODENN.SNX" };
-
-        private static List<String> filesList_VI_OG = new List<String> { "VI_OG_CGMODEAK.SNX", "VI_OG_CGMODEMO.SNX", "VI_OG_CGMODEMS.SNX",
-            "VI_OG_CGMODEMU.SNX", "VI_OG_CGMODEMZ.SNX", "VI_OG_CGMODENN.SNX" };
-
-        private static List<String> filesList_FV_OG_JP = new List<String> { "FV_OG_JP_AK26.SNX", "FV_OG_JP_DS01.SNX", "FV_OG_JP_DS05.SNX",
-            "FV_OG_JP_DS07.SNX", "FV_OG_JP_DS09.SNX", "FV_OG_JP_DS10_A.SNX", "FV_OG_JP_DS19.SNX", "FV_OG_JP_MI26.SNX",
-            "FV_OG_JP_MS22.SNX", "FV_OG_JP_MS25.SNX", "FV_OG_JP_MS27.SNX", "FV_OG_JP_MY24.SNX", "FV_OG_JP_NV30.SNX",
-            "FV_OG_JP_RM24.SNX", "FV_OG_JP_SBD25N1.SNX", "FV_OG_JP_SBRM14N1.SNX", "FV_OG_JP_SBRM17M1.SNX" };
-
-        private static List<String> filesList_FV_OG_EN = new List<String> { "FV_OG_EN_AK26.SNX", "FV_OG_EN_DS01.SNX", "FV_OG_EN_DS05.SNX",
-            "FV_OG_EN_DS07.SNX", "FV_OG_EN_DS09.SNX", "FV_OG_EN_DS10_A.SNX", "FV_OG_EN_DS19.SNX", "FV_OG_EN_MI26.SNX",
-            "FV_OG_EN_MS22.SNX", "FV_OG_EN_MS25.SNX", "FV_OG_EN_MS27.SNX", "FV_OG_EN_MY24.SNX", "FV_OG_EN_NV30.SNX",
-            "FV_OG_EN_RM24.SNX", "FV_OG_EN_SBD25N1.SNX", "FV_OG_EN_SBRM14N1.SNX", "FV_OG_EN_SBRM17M1.SNX" };
-
-        private static List<String> filesList_VI_OG_JP = new List<String> { "VI_OG_JP_AK26.SNX", "VI_OG_JP_DS01.SNX", "VI_OG_JP_DS05.SNX",
-            "VI_OG_JP_DS07.SNX", "VI_OG_JP_DS09.SNX", "VI_OG_JP_DS10_A.SNX", "VI_OG_JP_DS19.SNX", "VI_OG_JP_MI26.SNX",
-            "VI_OG_JP_MS22.SNX", "VI_OG_JP_MS25.SNX", "VI_OG_JP_MS27.SNX", "VI_OG_JP_MY24.SNX", "VI_OG_JP_NV30.SNX",
-            "VI_OG_JP_RM24.SNX", "VI_OG_JP_SBD25N1.SNX", "VI_OG_JP_SBRM14N1.SNX", "VI_OG_JP_SBRM17M1.SNX" };
-
-        private static List<String> filesList_VI_OG_EN = new List<String> { "VI_OG_EN_AK26.SNX", "VI_OG_EN_DS01.SNX", "VI_OG_EN_DS05.SNX",
-            "VI_OG_EN_DS07.SNX", "VI_OG_EN_DS09.SNX", "VI_OG_EN_DS10_A.SNX", "VI_OG_EN_DS19.SNX", "VI_OG_EN_MI26.SNX",
-            "VI_OG_EN_MS22.SNX", "VI_OG_EN_MS25.SNX", "VI_OG_EN_MS27.SNX", "VI_OG_EN_MY24.SNX", "VI_OG_EN_NV30.SNX",
-            "VI_OG_EN_RM24.SNX", "VI_OG_EN_SBD25N1.SNX", "VI_OG_EN_SBRM14N1.SNX", "VI_OG_EN_SBRM17M1.SNX" };
-
-        private static List<String> filesList_FV_BCG = new List<String> { "FV_BCG_CGMODEAK.SNX", "FV_BCG_CGMODEMO.SNX", "FV_BCG_CGMODEMS.SNX",
-            "FV_BCG_CGMODEMU.SNX", "FV_BCG_CGMODEMZ.SNX", "FV_BCG_CGMODENN.SNX" };
-
-        private static List<String> filesList_VI_BCG = new List<String> { "VI_BCG_CGMODEAK.SNX", "VI_BCG_CGMODEMO.SNX", "VI_BCG_CGMODEMS.SNX",
-            "VI_BCG_CGMODEMU.SNX", "VI_BCG_CGMODEMZ.SNX", "VI_BCG_CGMODENN.SNX" };
-
-        private static List<String> filesList_FV_BCG_JP = new List<String> { "FV_BCG_JP_AK26.SNX", "FV_BCG_JP_DS01.SNX", "FV_BCG_JP_DS05.SNX",
-            "FV_BCG_JP_DS07.SNX", "FV_BCG_JP_DS09.SNX", "FV_BCG_JP_DS10_A.SNX", "FV_BCG_JP_DS19.SNX", "FV_BCG_JP_MS22.SNX",
-            "FV_BCG_JP_MS25.SNX", "FV_BCG_JP_MS27.SNX", "FV_BCG_JP_MY24.SNX", "FV_BCG_JP_NV30.SNX", "FV_BCG_JP_RM24.SNX",
-            "FV_BCG_JP_SBD25N1.SNX", "FV_BCG_JP_SBRM14N1.SNX", "FV_BCG_JP_SBRM17M1.SNX" };
-
-        private static List<String> filesList_FV_BCG_EN = new List<String> { "FV_BCG_EN_AK26.SNX", "FV_BCG_EN_DS01.SNX", "FV_BCG_EN_DS05.SNX",
-            "FV_BCG_EN_DS07.SNX", "FV_BCG_EN_DS09.SNX", "FV_BCG_EN_DS10_A.SNX", "FV_BCG_EN_DS19.SNX", "FV_BCG_EN_MS22.SNX",
-            "FV_BCG_EN_MS25.SNX", "FV_BCG_EN_MS27.SNX", "FV_BCG_EN_MY24.SNX", "FV_BCG_EN_NV30.SNX", "FV_BCG_EN_RM24.SNX",
-            "FV_BCG_EN_SBD25N1.SNX", "FV_BCG_EN_SBRM14N1.SNX", "FV_BCG_EN_SBRM17M1.SNX" };
-
-        private static List<String> filesList_VI_BCG_JP = new List<String> { "VI_BCG_JP_AK26.SNX", "VI_BCG_JP_DS01.SNX", "VI_BCG_JP_DS05.SNX",
-            "VI_BCG_JP_DS07.SNX", "VI_BCG_JP_DS09.SNX", "VI_BCG_JP_DS10_A.SNX", "VI_BCG_JP_DS19.SNX", "VI_BCG_JP_MS22.SNX",
-            "VI_BCG_JP_MS25.SNX", "VI_BCG_JP_MS27.SNX", "VI_BCG_JP_MY24.SNX", "VI_BCG_JP_NV30.SNX", "VI_BCG_JP_RM24.SNX",
-            "VI_BCG_JP_SBD25N1.SNX", "VI_BCG_JP_SBRM14N1.SNX", "VI_BCG_JP_SBRM17M1.SNX" };
-
-        private static List<String> filesList_VI_BCG_EN = new List<String> { "VI_BCG_EN_AK26.SNX", "VI_BCG_EN_DS01.SNX", "VI_BCG_EN_DS05.SNX",
-            "VI_BCG_EN_DS07.SNX", "VI_BCG_EN_DS09.SNX", "VI_BCG_EN_DS10_A.SNX", "VI_BCG_EN_DS19.SNX", "VI_BCG_EN_MS22.SNX",
-            "VI_BCG_EN_MS25.SNX", "VI_BCG_EN_MS27.SNX", "VI_BCG_EN_MY24.SNX", "VI_BCG_EN_NV30.SNX", "VI_BCG_EN_RM24.SNX",
-            "VI_BCG_EN_SBD25N1.SNX", "VI_BCG_EN_SBRM14N1.SNX", "VI_BCG_EN_SBRM17M1.SNX" };
-
-        private static List<String> filesList_FV_AA = new List<String> { "FV_AA_CGMODEAK.SNX", "FV_AA_CGMODEMO.SNX", "FV_AA_CGMODEMS.SNX",
-            "FV_AA_CGMODEMU.SNX", "FV_AA_CGMODEMZ.SNX", "FV_AA_CGMODENN.SNX" };
-
-        private static List<String> filesList_VI_AA = new List<String> { "VI_AA_CGMODEAK.SNX", "VI_AA_CGMODEMO.SNX", "VI_AA_CGMODEMS.SNX",
-            "VI_AA_CGMODEMU.SNX", "VI_AA_CGMODEMZ.SNX", "VI_AA_CGMODENN.SNX" };
-
-        private static List<String> filesList_FV_AA_JP = new List<String> { "FV_AA_JP_AK26.SNX", "FV_AA_JP_MI26.SNX" };
-
-        private static List<String> filesList_FV_AA_EN = new List<String> { "FV_AA_EN_AK26.SNX", "FV_AA_EN_MI26.SNX" };
-
-        private static List<String> filesList_VI_AA_JP = new List<String> { "VI_AA_JP_AK26.SNX", "VI_AA_JP_MI26.SNX" };
-
-        private static List<String> filesList_VI_AA_EN = new List<String> { "VI_AA_EN_AK26.SNX", "VI_AA_EN_MI26.SNX" };
-
-        private static List<String> filesList_FV_BCG_AA = new List<String> { "FV_BCG_AA_CGMODEAK.SNX", "FV_BCG_AA_CGMODEMO.SNX", "FV_BCG_AA_CGMODEMS.SNX",
-            "FV_BCG_AA_CGMODEMU.SNX", "FV_BCG_AA_CGMODEMZ.SNX", "FV_BCG_AA_CGMODENN.SNX" };
-
-        private static List<String> filesList_VI_BCG_AA = new List<String> { "VI_BCG_AA_CGMODEAK.SNX", "VI_BCG_AA_CGMODEMO.SNX", "VI_BCG_AA_CGMODEMS.SNX",
-            "VI_BCG_AA_CGMODEMU.SNX", "VI_BCG_AA_CGMODEMZ.SNX", "VI_BCG_AA_CGMODENN.SNX" };
-
-        private static List<String> filesList_FV_BCG_AA_JP = new List<String> { "FV_BCG_AA_JP_AK26.SNX" };
-
-        private static List<String> filesList_FV_BCG_AA_EN = new List<String> { "FV_BCG_AA_EN_AK26.SNX" };
-
-        private static List<String> filesList_VI_BCG_AA_JP = new List<String> { "VI_BCG_AA_JP_AK26.SNX" };
-
-        private static List<String> filesList_VI_BCG_AA_EN = new List<String> { "VI_BCG_AA_EN_AK26.SNX" };
-
-
-        //Images Lists
-        private static List<String> filesList_OG = new List<String> { "OG_FGAK12.PNG", "OG_FGAK13.PNG", "OG_FGAK14.PNG", "OG_FGAK15.PNG", "OG_FGMI03.PNG",
-            "OG_FGMI04.PNG", "OG_FGMI05.PNG", "OG_FGMI06.PNG", "OG_FGMS07.PNG", "OG_FGMS08.PNG", "OG_FGMS09.PNG", "OG_FGMS10.PNG", "OG_FGMY11.PNG",
-            "OG_FGMY12.PNG", "OG_FGMY13.PNG", "OG_FGMY14.PNG", "OG_FGMZ12.PNG", "OG_FGMZ13.PNG", "OG_FGMZ14.PNG", "OG_FGMZ15.PNG", "OG_FGRM07.PNG", 
-            "OG_FGRM12.PNG", "OG_FGRM13.PNG", "OG_FGRM14.PNG", "OG_FGRM15.PNG" };
-
-        private static List<String> filesList_OG_JP = new List<String> { "OG_JP_CGMODEAKBK.PNG", "OG_JP_CGMODEAKCHIP.PNG", "OG_JP_CGMODEMOBK.PNG",
-            "OG_JP_CGMODEMOCHIP.PNG", "OG_JP_CGMODEMSBK.PNG", "OG_JP_CGMODEMSCHIP.PNG", "OG_JP_CGMODEMUBK.PNG", "OG_JP_CGMODEMUCHIP.PNG",
-            "OG_JP_CGMODEMZBK.PNG", "OG_JP_CGMODEMZCHIP.PNG", "OG_JP_CGMODENNBK.PNG", "OG_JP_CGMODENNCHIP.PNG" };
-
-        private static List<String> filesList_OG_EN = new List<String> { "OG_EN_CGMODEAKBK.PNG", "OG_EN_CGMODEAKCHIP.PNG", "OG_EN_CGMODEMOBK.PNG",
-            "OG_EN_CGMODEMOCHIP.PNG", "OG_EN_CGMODEMSBK.PNG", "OG_EN_CGMODEMSCHIP.PNG", "OG_EN_CGMODEMUBK.PNG", "OG_EN_CGMODEMUCHIP.PNG",
-            "OG_EN_CGMODEMZBK.PNG", "OG_EN_CGMODEMZCHIP.PNG", "OG_EN_CGMODENNBK.PNG", "OG_EN_CGMODENNCHIP.PNG" };
-
-        private static List<String> filesList_BCG = new List<String> { "BCG_BG400.PNG", "BCG_FGAK17.PNG", "BCG_FGAK18.PNG", "BCG_FGMI17.PNG", "BCG_FGMI18.PNG",
-            "BCG_FGMI19.PNG", "BCG_FGMS18.PNG", "BCG_FGMS19.PNG", "BCG_FGMY16.PNG", "BCG_FGMY17.PNG", "BCG_FGMZ17.PNG", "BCG_FGMZ18.PNG",
-            "BCG_FGRM16.PNG", "BCG_FGRM17.PNG", "BCG_FGRM18.PNG" };
-
-        private static List<String> filesList_BCG_JP = new List<String> { "BCG_JP_CGMODEAKBK.PNG", "BCG_JP_CGMODEAKCHIP.PNG", "BCG_JP_CGMODEMOBK.PNG",
-            "BCG_JP_CGMODEMOCHIP.PNG", "BCG_JP_CGMODEMSBK.PNG", "BCG_JP_CGMODEMSCHIP.PNG", "BCG_JP_CGMODEMUBK.PNG", "BCG_JP_CGMODEMUCHIP.PNG",
-            "BCG_JP_CGMODEMZBK.PNG", "BCG_JP_CGMODEMZCHIP.PNG", "BCG_JP_CGMODENNBK.PNG", "BCG_JP_CGMODENNCHIP.PNG" };
-
-        private static List<String> filesList_BCG_EN = new List<String> { "BCG_EN_CGMODEAKBK.PNG", "BCG_EN_CGMODEAKCHIP.PNG", "BCG_EN_CGMODEMOBK.PNG",
-            "BCG_EN_CGMODEMOCHIP.PNG", "BCG_EN_CGMODEMSBK.PNG", "BCG_EN_CGMODEMSCHIP.PNG", "BCG_EN_CGMODEMUBK.PNG", "BCG_EN_CGMODEMUCHIP.PNG",
-            "BCG_EN_CGMODEMZBK.PNG", "BCG_EN_CGMODEMZCHIP.PNG", "BCG_EN_CGMODENNBK.PNG", "BCG_EN_CGMODENNCHIP.PNG" };
-
-        private static List<String> filesList_AA = new List<String> { "AA_FGAK12.PNG", "AA_FGAK13.PNG", "AA_FGAK14.PNG", "AA_FGAK15.PNG", "AA_FGMI03.PNG",
-            "AA_FGMI04.PNG", "AA_FGMI05.PNG", "AA_FGMI06.PNG", "AA_FGMS07.PNG", "AA_FGMS08.PNG", "AA_FGMS09.PNG", "AA_FGMS10.PNG",
-            "AA_FGMY11.PNG", "AA_FGMY12.PNG", "AA_FGMY13.PNG", "AA_FGMY14.PNG", "AA_FGMZ12.PNG", "AA_FGMZ13.PNG", "AA_FGMZ14.PNG",
-            "AA_FGMZ15.PNG", "AA_FGRM07.PNG", "AA_FGRM12.PNG", "AA_FGRM13.PNG", "AA_FGRM14.PNG", "AA_FGRM15.PNG" };
-
-        private static List<String> filesList_AA_JP = new List<String> { "AA_JP_CGMODEAKBK.PNG", "AA_JP_CGMODEMOBK.PNG", "AA_JP_CGMODEMSBK.PNG",
-            "AA_JP_CGMODEMUBK.PNG", "AA_JP_CGMODEMZBK.PNG", "AA_JP_CGMODENNBK.PNG" };
-
-        private static List<String> filesList_AA_EN = new List<String> { "AA_EN_CGMODEAKBK.PNG", "AA_EN_CGMODEMOBK.PNG", "AA_EN_CGMODEMSBK.PNG",
-            "AA_EN_CGMODEMUBK.PNG", "AA_EN_CGMODEMZBK.PNG", "AA_EN_CGMODENNBK.PNG" };
-
-        private static List<String> filesList_BCG_AA_JP = new List<String> { "BCG_AA_JP_CGMODEAKBK.PNG", "BCG_AA_JP_CGMODEMOBK.PNG",
-            "BCG_AA_JP_CGMODEMSBK.PNG", "BCG_AA_JP_CGMODEMUBK.PNG", "BCG_AA_JP_CGMODEMZBK.PNG", "BCG_AA_JP_CGMODENNBK.PNG" };
-
-        private static List<String> filesList_BCG_AA_EN = new List<String> { "BCG_AA_EN_CGMODEAKBK.PNG", "BCG_AA_EN_CGMODEMOBK.PNG",
-            "BCG_AA_EN_CGMODEMSBK.PNG", "BCG_AA_EN_CGMODEMUBK.PNG", "BCG_AA_EN_CGMODEMZBK.PNG", "BCG_AA_EN_CGMODENNBK.PNG" };
-
-
-        private static void InitializeLists(out List<Entry> patchSNXFilesList, out List<Entry> patchIMGFilesList, ArchiveFileSystem afsPatchFiles)
+        public static void Patch(string edition, string language, string bonusCG, string aaContent, string path, RichTextBox richTextBox)
         {
-            patchSNXFilesList = new List<Entry>();
-            patchIMGFilesList = new List<Entry>();
-
-            //Full Voice Edition + H-scenes + No Bonus CG + Japanese
-            if (inputEdition.Substring(0, 1) == "1" && inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "2" && inputLanguage.Substring(0, 1) == "1")
-            {
-                foreach (String entry in filesList_FV_OG) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_FV_OG_JP) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_OG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_OG_JP) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-            }
-
-            //Full Voice Edition + H-scenes + No Bonus CG + English
-            else if (inputEdition.Substring(0, 1) == "1" && inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "2" && inputLanguage.Substring(0, 1) == "2")
-            {
-                foreach (String entry in filesList_FV_OG) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_FV_OG_EN) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_OG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_OG_EN) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-            }
-
-            //Full Voice Edition + H-scenes + Bonus CGs + Japanese
-            else if (inputEdition.Substring(0, 1) == "1" && inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "1" && inputLanguage.Substring(0, 1) == "1")
-            {
-                foreach (String entry in filesList_FV_BCG) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_FV_BCG_JP) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_MI26.SNX"));
-                foreach (String entry in filesList_OG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG_JP) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-            }
-
-            //Full Voice Edition + H-scenes + Bonus CGs + English
-            else if (inputEdition.Substring(0, 1) == "1" && inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "1" && inputLanguage.Substring(0, 1) == "2")
-            {
-                foreach (String entry in filesList_FV_BCG) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_FV_BCG_EN) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_MI26.SNX"));
-                foreach (String entry in filesList_OG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG_EN) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-            }
-
-            //Full Voice Edition + All Ages + No Bonus CG + Japanese
-            else if (inputEdition.Substring(0, 1) == "1" && inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "2" && inputLanguage.Substring(0, 1) == "1")
-            {
-                foreach (String entry in filesList_FV_AA) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_FV_AA_JP) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_DS01.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_DS05.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_DS07.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_DS09.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_DS10_A.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_DS19.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_MS22.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_MS25.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_MS27.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_MY24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_NV30.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_RM24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_SBD25N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_SBRM14N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_JP_SBRM17M1.SNX"));
-                foreach (String entry in filesList_AA) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_AA_JP) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEAKCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEMOCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEMSCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEMUCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEMZCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODENNCHIP.PNG"));
-            }
-
-            //Full Voice Edition + All Ages + No Bonus CG + English
-            else if (inputEdition.Substring(0, 1) == "1" && inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "2" && inputLanguage.Substring(0, 1) == "2")
-            {
-                foreach (String entry in filesList_FV_AA) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_FV_AA_EN) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_DS01.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_DS05.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_DS07.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_DS09.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_DS10_A.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_DS19.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_MS22.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_MS25.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_MS27.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_MY24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_NV30.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_RM24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_SBD25N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_SBRM14N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_OG_EN_SBRM17M1.SNX"));
-                foreach (String entry in filesList_AA) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_AA_EN) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEAKCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEMOCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEMSCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEMUCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEMZCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODENNCHIP.PNG"));
-            }
-
-            //Full Voice Edition + All Ages + Bonus CG + Japanese
-            else if (inputEdition.Substring(0, 1) == "1" && inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "1" && inputLanguage.Substring(0, 1) == "1")
-            {
-                foreach (String entry in filesList_FV_BCG_AA) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_FV_BCG_AA_JP) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_DS01.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_DS05.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_DS07.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_DS09.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_DS10_A.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_DS19.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_MS22.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_MS25.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_MS27.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_MY24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_NV30.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_RM24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_SBD25N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_SBRM14N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_JP_SBRM17M1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_AA_JP_MI26.SNX"));
-                foreach (String entry in filesList_BCG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_AA) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG_AA_JP) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEAKCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEMOCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEMSCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEMUCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEMZCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODENNCHIP.PNG"));
-            }
-
-            //Full Voice Edition + All Ages + Bonus CG + English
-            else if (inputEdition.Substring(0, 1) == "1" && inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "1" && inputLanguage.Substring(0, 1) == "2")
-            {
-                foreach (String entry in filesList_FV_BCG_AA) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_FV_BCG_AA_EN) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_DS01.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_DS05.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_DS07.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_DS09.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_DS10_A.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_DS19.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_MS22.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_MS25.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_MS27.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_MY24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_NV30.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_RM24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_SBD25N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_SBRM14N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_BCG_EN_SBRM17M1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("FV_AA_EN_MI26.SNX"));
-                foreach (String entry in filesList_BCG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_AA) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG_AA_EN) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEAKCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEMOCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEMSCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEMUCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEMZCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODENNCHIP.PNG"));
-            }
-
-            //Vista Edition + H-scenes + No Bonus CG + Japanese
-            else if (inputEdition.Substring(0, 1) == "2" && inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "2" && inputLanguage.Substring(0, 1) == "1")
-            {
-                foreach (String entry in filesList_VI_OG) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_VI_OG_JP) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_OG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_OG_JP) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-            }
-
-            //Vista Edition + H-scenes + No Bonus CG + English
-            else if (inputEdition.Substring(0, 1) == "2" && inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "2" && inputLanguage.Substring(0, 1) == "2")
-            {
-                foreach (String entry in filesList_VI_OG) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_VI_OG_EN) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_OG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_OG_EN) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-            }
-
-            //Vista Edition + H-scenes + Bonus CGs + Japanese
-            else if (inputEdition.Substring(0, 1) == "2" && inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "1" && inputLanguage.Substring(0, 1) == "1")
-            {
-                foreach (String entry in filesList_VI_BCG) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_VI_BCG_JP) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_MI26.SNX"));
-                foreach (String entry in filesList_OG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG_JP) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-            }
-
-            //Vista Edition + H-scenes + Bonus CGs + English
-            else if (inputEdition.Substring(0, 1) == "2" && inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "1" && inputLanguage.Substring(0, 1) == "2")
-            {
-                foreach (String entry in filesList_VI_BCG) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_VI_BCG_EN) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_MI26.SNX"));
-                foreach (String entry in filesList_OG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG_EN) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-            }
-
-            //Vista Edition + All Ages + No Bonus CG + Japanese
-            else if (inputEdition.Substring(0, 1) == "2" && inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "2" && inputLanguage.Substring(0, 1) == "1")
-            {
-                foreach (String entry in filesList_VI_AA) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_VI_AA_JP) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_DS01.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_DS05.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_DS07.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_DS09.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_DS10_A.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_DS19.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_MS22.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_MS25.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_MS27.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_MY24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_NV30.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_RM24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_SBD25N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_SBRM14N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_JP_SBRM17M1.SNX"));
-                foreach (String entry in filesList_AA) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_AA_JP) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEAKCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEMOCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEMSCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEMUCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODEMZCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_JP_CGMODENNCHIP.PNG"));
-            }
-
-            //Vista Edition + All Ages + No Bonus CG + English
-            else if (inputEdition.Substring(0, 1) == "2" && inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "2" && inputLanguage.Substring(0, 1) == "2")
-            {
-                foreach (String entry in filesList_VI_AA) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_VI_AA_EN) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_DS01.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_DS05.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_DS07.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_DS09.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_DS10_A.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_DS19.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_MS22.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_MS25.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_MS27.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_MY24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_NV30.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_RM24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_SBD25N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_SBRM14N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_OG_EN_SBRM17M1.SNX"));
-                foreach (String entry in filesList_AA) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_AA_EN) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEAKCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEMOCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEMSCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEMUCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEMZCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODENNCHIP.PNG"));
-            }
-
-            //Vista Edition + All Ages + Bonus CG + Japanese
-            else if (inputEdition.Substring(0, 1) == "2" && inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "1" && inputLanguage.Substring(0, 1) == "1")
-            {
-                foreach (String entry in filesList_VI_BCG_AA) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_VI_BCG_AA_JP) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_DS01.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_DS05.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_DS07.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_DS09.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_DS10_A.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_DS19.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_MS22.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_MS25.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_MS27.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_MY24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_NV30.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_RM24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_SBD25N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_SBRM14N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_JP_SBRM17M1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_AA_JP_MI26.SNX"));
-                foreach (String entry in filesList_BCG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_AA) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG_AA_JP) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEAKCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEMOCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEMSCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEMUCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODEMZCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_JP_CGMODENNCHIP.PNG"));
-            }
-
-            //Vista Edition + All Ages + Bonus CG + English
-            else if (inputEdition.Substring(0, 1) == "2" && inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "1" && inputLanguage.Substring(0, 1) == "2")
-            {
-                foreach (String entry in filesList_VI_BCG_AA) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_VI_BCG_AA_EN) patchSNXFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_DS01.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_DS05.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_DS07.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_DS09.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_DS10_A.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_DS19.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_MS22.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_MS25.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_MS27.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_MY24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_NV30.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_RM24.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_SBD25N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_SBRM14N1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_BCG_EN_SBRM17M1.SNX"));
-                patchSNXFilesList.Add(afsPatchFiles.FindFile("VI_AA_EN_MI26.SNX"));
-                foreach (String entry in filesList_BCG) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_AA) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                foreach (String entry in filesList_BCG_AA_EN) patchIMGFilesList.Add(afsPatchFiles.FindFile(entry));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEAKCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEMOCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEMSCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEMUCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEMZCHIP.PNG"));
-                patchIMGFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODENNCHIP.PNG"));
-            }
-        }
-
-
-        public static void Main(string[] args)
-        {
-            Console.WriteLine("ONE Eternal Patch v1.1");
-            Console.WriteLine("developed by Sep7\n");
-
-            //////////
-            //INPUTS
-            //////////
-            inputEdition = string.Empty;
-            do
-            {
-                Console.WriteLine("Enter 1 if you want to patch the Full Voice Edition.");
-                Console.WriteLine("Enter 2 if you want to patch the Vista Edition.");
-
-                inputEdition = Console.ReadLine();
-
-                if (inputEdition.Length != 1 || (inputEdition.Substring(0, 1) != "1" && inputEdition.Substring(0, 1) != "2"))
-                {
-                    Console.WriteLine("Syntax Error.\n");
-                }
-            } while (inputEdition.Length != 1 || (inputEdition.Substring(0, 1) != "1" && inputEdition.Substring(0, 1) != "2"));
-
-            inputLanguage = string.Empty;
-            do
-            {
-                Console.WriteLine("\nEnter 1 if you want to patch the Japanese Version.");
-                Console.WriteLine("Enter 2 if you want to patch the English translated Version.");
-
-                inputLanguage = Console.ReadLine();
-
-                if (inputLanguage.Length != 1 || (inputLanguage.Substring(0, 1) != "1" && inputLanguage.Substring(0, 1) != "2"))
-                {
-                    Console.WriteLine("Syntax Error.\n");
-                }
-            } while (inputLanguage.Length != 1 || (inputLanguage.Substring(0, 1) != "1" && inputLanguage.Substring(0, 1) != "2"));
-
-            inputBonusCG = string.Empty;
-            do
-            {
-                Console.WriteLine("\nEnter 1 if you want to add the bonus CGs.");
-                Console.WriteLine("Enter 2 if you don't want them.");
-
-                inputBonusCG = Console.ReadLine();
-
-                if (inputBonusCG.Length != 1 || (inputBonusCG.Substring(0, 1) != "1" && inputBonusCG.Substring(0, 1) != "2"))
-                {
-                    Console.WriteLine("Syntax Error.");
-                }
-            } while (inputBonusCG.Length != 1 || (inputBonusCG.Substring(0, 1) != "1" && inputBonusCG.Substring(0, 1) != "2"));
-
-            inputAAContent = string.Empty;
-            do
-            {
-                Console.WriteLine("\nEnter 1 if you want to remove the H-scenes (beta).");
-                Console.WriteLine("Enter 2 if you want to have the H-scenes.");
-
-                inputAAContent = Console.ReadLine();
-
-                if (inputAAContent.Length != 1 || (inputAAContent.Substring(0, 1) != "1" && inputAAContent.Substring(0, 1) != "2"))
-                {
-                    Console.WriteLine("Syntax Error.");
-                }
-            } while (inputAAContent.Length != 1 || (inputAAContent.Substring(0, 1) != "1" && inputAAContent.Substring(0, 1) != "2"));
-
-            Console.WriteLine("\n");
+            inputEdition = edition;
+            inputLanguage = language;
+            inputBonusCG = bonusCG;
+            inputAAContent = aaContent;
 
             //////////////////////////////
             //EXTRACTING OF THE PATCH FILES
@@ -552,27 +34,25 @@ namespace ONE_Eternal_Patch
             }
             catch (System.IO.FileNotFoundException e)
             {
-                Console.WriteLine("\nError: the file \"ONE_Patch_Files\" was not found.\n" +
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += "Error: the file \"ONE_Patch_Files\" was not found.\n" +
                     "Make sure to place it in the same directory as the executable.\n\n" +
-                    "Error details: " + e +
-                    "\n\nPress any key to continue.");
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                    "Error details: " + e; ;
+                return;
             }
             catch (System.UnauthorizedAccessException e)
             {
-                Console.WriteLine("\nError: the file \"ONE_Patch_Files\" can't be accessed.\n" +
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += "Error: the file \"ONE_Patch_Files\" can't be accessed.\n" +
                     "Make sure that the file and the current folder are not in read only access.\n\n" +
-                    "Error details: " + e +
-                    "\n\nPress any key to continue.");
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                    "Error details: " + e;
+                return;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += e.Message;
+                return;
             }
 
             LstOpener lst = new LstOpener();
@@ -591,18 +71,17 @@ namespace ONE_Eternal_Patch
             }
             catch (System.UnauthorizedAccessException e)
             {
-                Console.WriteLine("\nError: the file \"ONE_Patch_Files.lst\" can't be accessed.\n" +
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += "Error: the file \"ONE_Patch_Files.lst\" can't be accessed.\n" +
                     "Make sure that the file and the current folder are not in read only access.\n\n" +
-                    "Error details: " + e +
-                    "\n\nPress any key to continue.");
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                    "Error details: " + e;
+                return;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += e.Message;
+                return;
             }
 
 
@@ -613,36 +92,35 @@ namespace ONE_Eternal_Patch
             }
             catch (System.NullReferenceException e)
             {
-                Console.WriteLine("\nError: the file \"ONE_Patch_Files.lst\" was not found.\n" +
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += "Error: the file \"ONE_Patch_Files.lst\" was not found.\n" +
                     "Make sure to place it in the same directory as the executable.\n\n" +
-                    "Error details: " + e +
-                    "\n\nPress any key to continue.");
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                    "Error details: " + e;
+                return;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += e.Message;
+                return;
             }
 
             List<Entry> patchFilesList = new List<Entry>();
 
-            InitializeLists(out List<Entry> patchSNXFilesList, out List<Entry> patchIMGFilesList, afsPatchFiles);
+            Files_Lists.InitializeLists(out List<Entry> patchSNXFilesList, out List<Entry> patchIMGFilesList, afsPatchFiles, inputEdition, inputLanguage, inputBonusCG, inputAAContent);
 
-            List<String> prefixList = new List<String> { "FV_OG_JP_", "FV_OG_EN_", "FV_OG_",
-            "FV_BCG_AA_JP_", "FV_BCG_AA_EN_", "FV_BCG_AA_",
-            "FV_BCG_JP_", "FV_BCG_EN_", "FV_BCG_",
-            "FV_AA_JP_", "FV_AA_EN_", "FV_AA_",
+            List<String> prefixList = new List<String> { "FV_OG_JP_", "FV_OG_EN_", "FV_OG_SP_", "FV_OG_CH_", "FV_OG_",
+            "FV_BCG_AA_JP_", "FV_BCG_AA_EN_", "FV_BCG_AA_SP_", "FV_BCG_AA_CH_", "FV_BCG_AA_",
+            "FV_BCG_JP_", "FV_BCG_EN_", "FV_BCG_SP_", "FV_BCG_CH_", "FV_BCG_",
+            "FV_AA_JP_", "FV_AA_EN_", "FV_AA_SP_", "FV_AA_CH_", "FV_AA_",
             "VI_OG_JP_", "VI_OG_EN_", "VI_OG_",
             "VI_BCG_AA_JP_", "VI_BCG_AA_EN_", "VI_BCG_AA_",
             "VI_BCG_JP_", "VI_BCG_EN_", "VI_BCG_",
             "VI_AA_JP_", "VI_AA_EN_", "VI_AA_",
-            "OG_JP_", "OG_EN_", "OG_",
-            "BCG_AA_JP_", "BCG_AA_EN_",
-            "BCG_JP_", "BCG_EN_", "BCG_",
-            "AA_JP_", "AA_EN_", "AA_" };
+            "OG_JP_", "OG_EN_", "OG_SP_", "OG_CH_", "OG_",
+            "BCG_AA_JP_", "BCG_AA_EN_", "BCG_AA_SP_", "BCG_AA_CH_",
+            "BCG_JP_", "BCG_EN_", "BCG_SP_", "BCG_CH_", "BCG_",
+            "AA_JP_", "AA_EN_", "AA_SP_", "AA_CH_", "AA_" };
 
             //Removing of the prefixes
             for (int j = 0; j < patchSNXFilesList.Count; j++)
@@ -689,25 +167,35 @@ namespace ONE_Eternal_Patch
                 sortedIMG = patchIMGFilesList.OrderBy(f => f.Name.ToLower(), StringComparer.Ordinal);
             }
 
-            //The list in then sorted by type
+            //The list is then sorted by type
             patchFilesList.AddRange(sortedSNX);
             patchFilesList.AddRange(sortedIMG);
+
+            //In the Chinese version, the SNX and IMG files are mixed together
+            if (inputLanguage.Substring(0, 1) == "4")
+            {
+                patchFilesList = patchFilesList.OrderBy(f => f.Name).ToList();
+            }
 
 
             //This file only exists in the English translated version and is placed at the end of the archive for some reasons.
             //I'm pretty sure it's a mistake of the TL team but I prefer to update it, just in case.
             if (inputLanguage.Substring(0, 1) == "2")
             {
-                if (inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "1") {
+                if (inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "1")
+                {
                     patchFilesList.Add(afsPatchFiles.FindFile("BCG_AA_EN_CGMODEAKMU.PNG"));
                 }
-                else if (inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "2") {
+                else if (inputAAContent.Substring(0, 1) == "1" && inputBonusCG.Substring(0, 1) == "2")
+                {
                     patchFilesList.Add(afsPatchFiles.FindFile("AA_EN_CGMODEAKMU.PNG"));
                 }
-                else if (inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "1") {
+                else if (inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "1")
+                {
                     patchFilesList.Add(afsPatchFiles.FindFile("BCG_EN_CGMODEAKMU.PNG"));
                 }
-                else if (inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "2") {
+                else if (inputAAContent.Substring(0, 1) == "2" && inputBonusCG.Substring(0, 1) == "2")
+                {
                     patchFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEAKMU.PNG"));
                 }
 
@@ -718,37 +206,79 @@ namespace ONE_Eternal_Patch
             "FGMI17.PNG", "FGMI18.PNG", "FGMI19.PNG", "FGMS18.PNG", "FGMS19.PNG", "FGMY16.PNG", "FGMY17.PNG",
             "FGMZ17.PNG", "FGMZ18.PNG", "FGRM16.PNG", "FGRM17.PNG", "FGRM18.PNG" };
 
+            //In the case of the Spanish translated version, the files are outside of the archive instead of being inside of it
+            //The writing of the files is thus much simpler than the rest and is contained in the if condition bellow
+            if (inputLanguage.Substring(0, 1) == "3")
+            {
+                List<String> filesListToDelete = new List<String> { "CGMODEAK.SNX", "CGMODEMO.SNX", "CGMODEMS.SNX",
+                "CGMODEMU.SNX", "CGMODEMZ.SNX", "CGMODENN.SNX", "FGAK12.PNG", "FGAK13.PNG", "FGAK14.PNG", "FGAK15.PNG",
+                "FGMI03.PNG", "FGMI04.PNG", "FGMI05.PNG", "FGMI06.PNG", "FGMS07.PNG", "FGMS08.PNG", "FGMS09.PNG",
+                "FGMS10.PNG", "FGMY11.PNG", "FGMY12.PNG", "FGMY13.PNG", "FGMY14.PNG", "FGMZ12.PNG", "FGMZ13.PNG",
+                "FGMZ14.PNG", "FGMZ15.PNG", "FGRM07.PNG", "FGRM12.PNG", "FGRM13.PNG", "FGRM14.PNG", "FGRM15.PNG" };
+                filesListToDelete.AddRange(filesListToNotUpdate);
+
+                //Delete the files that might not be used to have a clean directory
+                foreach (string fileName in filesListToDelete)
+                {
+                    if (File.Exists(path + fileName))
+                    {
+                        richTextBox.Text += fileName + " will be deleted.\n";
+                        File.Delete(path + fileName);
+                    }
+                }
+
+                foreach (Entry entry in patchFilesList)
+                {
+                    if (File.Exists(path + entry.Name))
+                    {
+                        richTextBox.Text += entry.Name + " will be updated.\n";
+                    }
+                    else
+                    {
+                        richTextBox.Text += entry.Name + " will be inserted.\n";
+                    }
+                    var inputSpanishFile = arcPatchFiles.OpenEntry(entry);
+                    var outputSpanishFile = File.Open(path + entry.Name, FileMode.Create);
+                    inputSpanishFile.CopyTo(outputSpanishFile);
+                    inputSpanishFile.Close();
+                    outputSpanishFile.Close();
+                }
+
+                richTextBox.Text += "\nDone!";
+                richTextBox.Text += "\nPress any key to continue.";
+                
+                return;
+            }
+
             //////////////////////////////
             //EXTRACTING OF THE ORIGINAL FILES
             //////////////////////////////
-            string originalFileName = inputEdition.Substring(0, 1) == "1" ? "one" : "lcsebody1";
+            string originalFileName = inputEdition.Substring(0, 1) == "1" ? inputLanguage.Substring(0, 1) != "4" ? "one" : "one_cn" : "lcsebody1";
             try
             {
-                originalFile = new ArcView("./" + originalFileName);
+                originalFile = new ArcView(path + originalFileName);
             }
             catch (System.IO.FileNotFoundException e)
             {
-                Console.WriteLine("\nError: the file \"" + originalFileName + "\" was not found.\n" +
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += "Error: the file \"" + originalFileName + "\" was not found.\n" +
                     "Make sure to place it in the same directory as the executable.\n\n" +
-                    "Error details: " + e +
-                    "\n\nPress any key to continue.");
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                    "Error details: " + e;
+                return;
             }
             catch (System.UnauthorizedAccessException e)
             {
-                Console.WriteLine("\nError: the file \"" + originalFileName + "\" can't be accessed.\n" +
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += "Error: the file \"" + originalFileName + "\" can't be accessed.\n" +
                     "Make sure that the file and the current folder are not in read only access.\n\n" +
-                    "Error details: " + e +
-                    "\n\nPress any key to continue.");
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                    "Error details: " + e;
+                return;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += e.Message;
+                return;
             }
 
             try
@@ -757,18 +287,17 @@ namespace ONE_Eternal_Patch
             }
             catch (System.UnauthorizedAccessException e)
             {
-                Console.WriteLine("\nError: the file \"" + originalFileName + ".lst\" can't be accessed.\n" +
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += "Error: the file \"" + originalFileName + ".lst\" can't be accessed.\n" +
                     "Make sure that the file and the current folder are not in read only access.\n\n" +
-                    "Error details: " + e +
-                    "\n\nPress any key to continue.");
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                    "Error details: " + e;
+                return;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += e.Message;
+                return;
             }
             try
             {
@@ -776,18 +305,17 @@ namespace ONE_Eternal_Patch
             }
             catch (System.NullReferenceException e)
             {
-                Console.WriteLine("\nError: the file \"" + originalFileName + ".lst\" was not found.\n" +
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += "Error: the file \"" + originalFileName + ".lst\" was not found.\n" +
                     "Make sure to place it in the same directory as the executable.\n\n" +
-                    "Error details: " + e +
-                    "\n\nPress any key to continue.");
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                    "Error details: " + e;
+                return;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                Console.ReadKey(true);
-                System.Environment.Exit(1);
+                richTextBox.ForeColor = Color.Red;
+                richTextBox.Text += e.Message;
+                return;
             }
 
 
@@ -822,7 +350,7 @@ namespace ONE_Eternal_Patch
                     entry.Name.Equals(fileName))
                 {
                     resultFilesList.Add((Entry)patchFilesList.ToArray()[i]);
-                    Console.WriteLine(fileName + " will be updated.");
+                    richTextBox.Text += fileName + " will be updated.\n";
                     i++;
                 }
                 //Insert new file(s) and the current original file
@@ -838,7 +366,7 @@ namespace ONE_Eternal_Patch
                     {
 
                         resultFilesList.Add((Entry)patchFilesList.ToArray()[i]);
-                        Console.WriteLine(fileName + " will be inserted.");
+                        richTextBox.Text += fileName + " will be inserted.\n";
                         i++;
 
                         if (patchFilesList.ToArray().Length > i)
@@ -860,8 +388,8 @@ namespace ONE_Eternal_Patch
             ////////////////////
             //WRITING PART
             ////////////////////
-            Console.WriteLine("Writing...");
-
+            richTextBox.Text += "Writing...\n";
+            
             var cp932 = Encodings.cp932.WithFatalFallback(); //cp932 is the encoding for the Japanese characters
             var nbFiles = resultFilesList.ToArray().Length; //count the number of files
 
@@ -880,7 +408,7 @@ namespace ONE_Eternal_Patch
             convertedKey |= convertedKey << 8; //1 => 257, 0001 => 0000 0001 0000 0001
             convertedKey |= convertedKey << 16; //257 => 16 843 009 => 0001 0001 0001 0001
 
-            //This key is used to encrypt the SNX files, she's always equal to 02
+            //This key is used to encrypt the SNX files, it's always equal to 02
             //We only need the key to be on 8 bits so we don't do a conversion
             var keySNX = 0x02;
 
@@ -932,7 +460,7 @@ namespace ONE_Eternal_Patch
                 //Writing of the header
                 if (!headerWritten)
                 {
-                    //The header corresponds to the 4 first bytes of the files, he indicates the number of files and the key (4th bytes)
+                    //The header corresponds to the 4 first bytes of the files, it indicates the number of files and the key (4th bytes)
                     var header = nbFiles ^ convertedKey;
                     bw.Write(header);
                     headerWritten = true;
@@ -959,7 +487,7 @@ namespace ONE_Eternal_Patch
                 {
                     while ((byteTempo = stream.ReadByte()) > -1)
                     {
-                        byteTempo = byteTempo ^ keySNX;
+                        byteTempo ^= keySNX;
                         output.WriteByte((byte)byteTempo); //we directly write the bytes into the file without using the stream
                     }
                 }
@@ -994,18 +522,16 @@ namespace ONE_Eternal_Patch
             patchFile.Dispose();
 
             //At the end, we replace the original files with the files that we have created.
-            File.SetAttributes(originalFileName, FileAttributes.Normal);
-            File.SetAttributes(originalFileName + ".lst", FileAttributes.Normal);
+            File.SetAttributes(originalFile.Name, FileAttributes.Normal);
+            File.SetAttributes(originalFile.Name + ".lst", FileAttributes.Normal);
 
-            File.Delete(originalFileName);
-            File.Delete(originalFileName + ".lst");
+            File.Delete(originalFile.Name);
+            File.Delete(originalFile.Name + ".lst");
 
-            File.Move("one_TEMP", originalFileName);
-            File.Move("one_TEMP.lst", originalFileName + ".lst");
+            File.Move("one_TEMP", originalFile.Name);
+            File.Move("one_TEMP.lst", originalFile.Name + ".lst");
 
-            Console.WriteLine("\nDone!");
-            Console.WriteLine("\nPress any key to continue.");
-            Console.ReadKey(true);
+            richTextBox.Text += "\nDone!";
         }
     }
 }
