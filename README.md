@@ -41,7 +41,8 @@ Glitches being fixed
 The patch fixes a few minor glitches present in the gallery:<br/>
 - Mio had a headpat CG that you weren't able to see because the developers forgot a few lines of code<br/>
 - Nanase had some CG miniatures that had a 1 pixel white line because of the way they were disposed in the assets<br/>
-- In the Spanish translation, Mayu's name was written in Japanese because the devs didn't name one of the files correctly<br/>
+- In the Spanish translation, Mayu's name was written in Japanese because the devs didn't name one of the files correctly
+
 Note that these glitches are only fixed if you apply at least one of the changes brought by the Eternal Patch.<br/>
 
 FAQ
