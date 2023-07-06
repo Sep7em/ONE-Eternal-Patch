@@ -52,6 +52,13 @@ namespace ONE_Eternal_Patch
                 buttonPatch.Enabled = false;
             else
                 buttonPatch.Enabled = true;
+
+            if (radioButtonJapanese.Checked || radioButtonEnglish.Checked)
+                groupBoxPS1.Text = "PS1 (New CGs + Natsuki's route)";
+            else if (radioButtonSpanish.Checked || radioButtonChinese.Checked)
+                groupBoxPS1.Text = "PS1 (New CGs)";
+            else
+                groupBoxPS1.Text = "PS1";
         }
 
         private void buttonBrowse_Click(object sender, EventArgs e)
@@ -66,7 +73,7 @@ namespace ONE_Eternal_Patch
         {
             string edition;
             string language;
-            string bonusCG;
+            string PS1;
             string aaContent;
             string sepChar = Path.DirectorySeparatorChar.ToString();
             string altChar = Path.AltDirectorySeparatorChar.ToString();
@@ -92,9 +99,9 @@ namespace ONE_Eternal_Patch
                 language = "4";
 
             if (radioButtonEnableCGs.Checked)
-                bonusCG = "1";
+                PS1 = "1";
             else
-                bonusCG = "2";
+                PS1 = "2";
 
             if (radioButtonAllAges.Checked)
                 aaContent = "1";
@@ -104,7 +111,7 @@ namespace ONE_Eternal_Patch
             richTextBox.Text = "";
             richTextBox.ForeColor = Color.Black;
 
-            ONE_Eternal_Patch.Patch(edition, language, bonusCG, aaContent, textBox.Text, richTextBox);
+            ONE_Eternal_Patch.Patch(edition, language, PS1, aaContent, textBox.Text, richTextBox);
             
             //Error: Natsuki is sad
             if (richTextBox.ForeColor == Color.Red)

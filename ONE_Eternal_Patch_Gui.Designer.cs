@@ -41,7 +41,7 @@
             this.radioButtonVista = new System.Windows.Forms.RadioButton();
             this.radioButtonFullVoice = new System.Windows.Forms.RadioButton();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.groupBoxBonusCGs = new System.Windows.Forms.GroupBox();
+            this.groupBoxPS1 = new System.Windows.Forms.GroupBox();
             this.radioButtonDisableCGs = new System.Windows.Forms.RadioButton();
             this.radioButtonEnableCGs = new System.Windows.Forms.RadioButton();
             this.groupBoxAdultContent = new System.Windows.Forms.GroupBox();
@@ -61,7 +61,7 @@
             this.groupBoxLanguage.SuspendLayout();
             this.groupBoxEdition.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
-            this.groupBoxBonusCGs.SuspendLayout();
+            this.groupBoxPS1.SuspendLayout();
             this.groupBoxAdultContent.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -218,7 +218,7 @@
             // 
             this.tableLayoutPanel4.ColumnCount = 1;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Controls.Add(this.groupBoxBonusCGs, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.groupBoxPS1, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.groupBoxAdultContent, 0, 1);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(311, 3);
@@ -229,17 +229,17 @@
             this.tableLayoutPanel4.Size = new System.Drawing.Size(302, 226);
             this.tableLayoutPanel4.TabIndex = 1;
             // 
-            // groupBoxBonusCGs
+            // groupBoxPS1
             // 
-            this.groupBoxBonusCGs.Controls.Add(this.radioButtonDisableCGs);
-            this.groupBoxBonusCGs.Controls.Add(this.radioButtonEnableCGs);
-            this.groupBoxBonusCGs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBoxBonusCGs.Location = new System.Drawing.Point(3, 3);
-            this.groupBoxBonusCGs.Name = "groupBoxBonusCGs";
-            this.groupBoxBonusCGs.Size = new System.Drawing.Size(296, 107);
-            this.groupBoxBonusCGs.TabIndex = 0;
-            this.groupBoxBonusCGs.TabStop = false;
-            this.groupBoxBonusCGs.Text = "Bonus CGs";
+            this.groupBoxPS1.Controls.Add(this.radioButtonDisableCGs);
+            this.groupBoxPS1.Controls.Add(this.radioButtonEnableCGs);
+            this.groupBoxPS1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBoxPS1.Location = new System.Drawing.Point(3, 3);
+            this.groupBoxPS1.Name = "groupBoxPS1";
+            this.groupBoxPS1.Size = new System.Drawing.Size(296, 107);
+            this.groupBoxPS1.TabIndex = 0;
+            this.groupBoxPS1.TabStop = false;
+            this.groupBoxPS1.Text = "PS1";
             // 
             // radioButtonDisableCGs
             // 
@@ -390,7 +390,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ONE_Eternal_Patch_Gui";
-            this.Text = "ONE Eternal Patch v1.2 by Sep7";
+            this.Text = "ONE Eternal Patch v2.0 by Sep7";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
@@ -399,8 +399,8 @@
             this.groupBoxEdition.ResumeLayout(false);
             this.groupBoxEdition.PerformLayout();
             this.tableLayoutPanel4.ResumeLayout(false);
-            this.groupBoxBonusCGs.ResumeLayout(false);
-            this.groupBoxBonusCGs.PerformLayout();
+            this.groupBoxPS1.ResumeLayout(false);
+            this.groupBoxPS1.PerformLayout();
             this.groupBoxAdultContent.ResumeLayout(false);
             this.groupBoxAdultContent.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -419,7 +419,7 @@
         private System.Windows.Forms.GroupBox groupBoxLanguage;
         private System.Windows.Forms.GroupBox groupBoxEdition;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
-        private System.Windows.Forms.GroupBox groupBoxBonusCGs;
+        private System.Windows.Forms.GroupBox groupBoxPS1;
         private System.Windows.Forms.Button buttonPatch;
         private System.Windows.Forms.RadioButton radioButtonChinese;
         private System.Windows.Forms.RadioButton radioButtonSpanish;
