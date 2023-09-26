@@ -11,18 +11,8 @@ namespace ONE_Eternal_Patch
 {
     public class ONE_Eternal_Patch
     {
-        private static string inputEdition;
-        private static string inputLanguage;
-        private static string inputPS1;
-        private static string inputAAContent;
-
-        public static void Patch(string edition, string language, string PS1, string aaContent, string path, RichTextBox richTextBox)
+        public static void Patch(Edition edition, Language language, bool PS1Content, bool AAContent, bool miscContent, string path, RichTextBox richTextBox)
         {
-            inputEdition = edition;
-            inputLanguage = language;
-            inputPS1 = PS1;
-            inputAAContent = aaContent;
-
             //////////////////////////////
             //EXTRACTION OF THE PATCH FILES
             //////////////////////////////
@@ -69,8 +59,8 @@ namespace ONE_Eternal_Patch
 
             try
             {
-                //then, we want to get the encrypted file with the LstOpener
-                //the arcfile is composed of the view on the original file, of an instance of LstOpener used to determinate the format
+                //Then, we want to get the encrypted file with the LstOpener
+                //The arcfile is composed of the view on the original file, of an instance of LstOpener used to determinate the format
                 //and of a list of all the files/entries with their names, type, offset and size
                 arcPatchFiles = lst.TryOpen(patchFile);
             }
@@ -92,10 +82,10 @@ namespace ONE_Eternal_Patch
 
             try
             {
-                //create a dictionary of data where the key is equal to the name of the entry and where the content is equal to the current entry
+                //Create a dictionary of data where the key is equal to the name of the entry and where the content is equal to the current entry
                 afsPatchFiles = arcPatchFiles.CreateFileSystem();
             }
-            catch (System.NullReferenceException e)
+            catch (NullReferenceException e)
             {
                 richTextBox.ForeColor = Color.Red;
                 richTextBox.Text += "Error: the file \"ONE_Patch_Files.lst\" was not found.\n" +
@@ -112,68 +102,12 @@ namespace ONE_Eternal_Patch
 
             List<Entry> patchFilesList = new List<Entry>();
 
-            Files_Lists.InitializeLists(out List<Entry> patchSNXFilesList, out List<Entry> patchIMGFilesList, out List<Entry> patchSNDFilesList, afsPatchFiles, inputEdition, inputLanguage, inputPS1, inputAAContent);
-
-            List<String> prefixList = new List<String> { "FV_OG_JP_", "FV_OG_EN_", "FV_OG_SP_", "FV_OG_CH_", "FV_OG_",
-            "FV_PS1_AA_JP_", "FV_PS1_AA_EN_", "FV_PS1_AA_SP_", "FV_PS1_AA_CH_", "FV_PS1_AA_",
-            "FV_PS1_JP_", "FV_PS1_EN_", "FV_PS1_SP_", "FV_PS1_CH_", "FV_PS1_",
-            "FV_AA_JP_", "FV_AA_EN_", "FV_AA_SP_", "FV_AA_CH_", "FV_AA_",
-            "VI_OG_JP_", "VI_OG_EN_", "VI_OG_",
-            "VI_PS1_AA_JP_", "VI_PS1_AA_EN_", "VI_PS1_AA_",
-            "VI_PS1_JP_", "VI_PS1_EN_", "VI_PS1_",
-            "VI_AA_JP_", "VI_AA_EN_", "VI_AA_",
-            "OG_JP_", "OG_EN_", "OG_SP_", "OG_CH_", "OG_",
-            "PS1_AA_JP_", "PS1_AA_EN_", "PS1_AA_SP_", "PS1_AA_CH_",
-            "PS1_JP_", "PS1_EN_", "PS1_SP_", "PS1_CH_", "PS1_",
-            "AA_JP_", "AA_EN_", "AA_SP_", "AA_CH_", "AA_" };
-
-            //Removing of the prefixes
-            for (int j = 0; j < patchSNXFilesList.Count; j++)
-            {
-                string filename = ((Entry)patchSNXFilesList.ToArray()[j]).Name;
-                foreach (String prefix in prefixList)
-                {
-                    //Remove the prefix of the name of the files
-                    if (filename.StartsWith(prefix))
-                    {
-                        ((Entry)patchSNXFilesList.ToArray()[j]).Name = filename.Replace(prefix, "");
-                        break;
-                    }
-                }
-            }
-
-            for (int j = 0; j < patchIMGFilesList.Count; j++)
-            {
-                string filename = ((Entry)patchIMGFilesList.ToArray()[j]).Name;
-                foreach (String prefix in prefixList)
-                {
-                    //Remove the prefix of the name of the files
-                    if (filename.StartsWith(prefix))
-                    {
-                        ((Entry)patchIMGFilesList.ToArray()[j]).Name = filename.Replace(prefix, "");
-                        break;
-                    }
-                }
-            }
-
-            for (int j = 0; j < patchSNDFilesList.Count; j++)
-            {
-                string filename = ((Entry)patchSNDFilesList.ToArray()[j]).Name;
-                foreach (String prefix in prefixList)
-                {
-                    //Remove the prefix of the name of the files
-                    if (filename.StartsWith(prefix))
-                    {
-                        ((Entry)patchSNDFilesList.ToArray()[j]).Name = filename.Replace(prefix, "");
-                        break;
-                    }
-                }
-            }
+            Files_Lists.InitializeLists(out List<Entry> patchSNXFilesList, out List<Entry> patchIMGFilesList, out List<Entry> patchSNDFilesList, afsPatchFiles, edition, language, PS1Content, AAContent, miscContent);
 
             IOrderedEnumerable<Entry> sortedSNX;
             IOrderedEnumerable<Entry> sortedIMG;
             //Full Voice Edition: sorting of the list by Windows alphabetical order ("_" => "0...9" => "A...Z")
-            if (inputEdition.Substring(0, 1) == "1")
+            if (edition == Edition.FV)
             {
                 sortedSNX = patchSNXFilesList.OrderBy(f => f.Name);
                 sortedIMG = patchIMGFilesList.OrderBy(f => f.Name);
@@ -186,7 +120,7 @@ namespace ONE_Eternal_Patch
                 sortedIMG = patchIMGFilesList.OrderBy(f => f.Name.ToLower(), StringComparer.Ordinal);
 
                 //The first entry of the archive is NECEMEM.SNX in this edition
-                if (inputPS1.Substring(0, 1) == "2")
+                if (!PS1Content)
                     patchFilesList.Add(afsPatchFiles.FindFile("VI_OG_NECEMEM.SNX"));
                 else
                     patchFilesList.Add(afsPatchFiles.FindFile("VI_PS1_NECEMEM.SNX"));
@@ -199,7 +133,7 @@ namespace ONE_Eternal_Patch
             patchFilesList.AddRange(sortedIMG);
 
             //In the Chinese version, the SNX and IMG files are mixed together
-            if (inputLanguage.Substring(0, 1) == "4")
+            if (language == Language.CH)
             {
                 patchFilesList = patchFilesList.OrderBy(f => f.Name).ToList();
             }
@@ -207,38 +141,39 @@ namespace ONE_Eternal_Patch
 
             //This file only exists in the English translated version and is placed at the end of the archive for some reasons.
             //I'm pretty sure it's a mistake of the TL team but I prefer to update it, just in case.
-            if (inputLanguage.Substring(0, 1) == "2")
+            if (language == Language.EN)
             {
-                if (inputAAContent.Substring(0, 1) == "1" && inputPS1.Substring(0, 1) == "1")
+                if (AAContent && PS1Content)
                     patchFilesList.Add(afsPatchFiles.FindFile("PS1_AA_EN_CGMODEAKMU.PNG"));
-                else if (inputAAContent.Substring(0, 1) == "1" && inputPS1.Substring(0, 1) == "2")
+                else if (AAContent && !PS1Content)
                     patchFilesList.Add(afsPatchFiles.FindFile("AA_EN_CGMODEAKMU.PNG"));
-                else if (inputAAContent.Substring(0, 1) == "2" && inputPS1.Substring(0, 1) == "1")
+                else if (!AAContent && PS1Content)
                     patchFilesList.Add(afsPatchFiles.FindFile("PS1_EN_CGMODEAKMU.PNG"));
-                else if (inputAAContent.Substring(0, 1) == "2" && inputPS1.Substring(0, 1) == "2")
+                else if (!AAContent && !PS1Content)
                     patchFilesList.Add(afsPatchFiles.FindFile("OG_EN_CGMODEAKMU.PNG"));
 
                 patchFilesList.Last().Name = "CGMODEAKMU.PNG";
             }
 
-            List<String> filesListToNotUpdate = new List<String> { "CGMODENA.SNX", "NA18.SNX", "NA22.SNX", "NA24.SNX",
-                "NA25.SNX", "NA27.SNX", "NAE.SNX", "BG400.PNG", "CGMODENABK.PNG", "CGMODENACHIP.PNG", "CGMODETOPMENUNA.PNG",
-                "CGNA01.PNG", "CGNA01M.PNG", "CGNA02.PNG", "CGNA02M.PNG", "CGNA03.PNG", "CGNA03M.PNG", "CGNA04.PNG",
-                "CGNA04M.PNG", "CGNA05.PNG", "CGNA05M.PNG", "FGAK17.PNG", "FGAK18.PNG", "FGMI17.PNG", "FGMI18.PNG",
+            List<string> filesListToNotUpdate = new List<string> { "BG814.PNG", "CGMODENA.SNX", "NA18.SNX", "NA22.SNX",
+                "NA24.SNX", "NA25.SNX", "NA27.SNX", "NAE.SNX", "BG400.PNG", "CGMODENABK.PNG", "CGMODENACHIP.PNG",
+                "CGMODETOPMENUNA.PNG", "CGNA01.PNG", "CGNA01M.PNG", "CGNA02.PNG", "CGNA02M.PNG", "CGNA03.PNG", "CGNA03M.PNG",
+                "CGNA04.PNG", "CGNA04M.PNG", "CGNA05.PNG", "CGNA05M.PNG", "FGAK17.PNG", "FGAK18.PNG", "FGMI17.PNG", "FGMI18.PNG",
                 "FGMI19.PNG", "FGMS18.PNG", "FGMS19.PNG", "FGMY16.PNG", "FGMY17.PNG", "FGMZ17.PNG", "FGMZ18.PNG",
                 "FGNA01A.PNG", "FGNA01B.PNG", "FGNA02.PNG", "FGNA03.PNG", "FGNA04.PNG", "FGNA05.PNG", "FGNA06.PNG",
                 "FGNA07.PNG", "FGNA08.PNG", "FGNA09.PNG", "FGRM16.PNG", "FGRM17.PNG", "FGRM18.PNG" };
 
             //In the case of the Spanish translated version, the files are outside of the archive instead of being inside of it
-            //The writing of the files is thus much simpler than the rest and is contained in the if condition bellow
-            if (inputLanguage.Substring(0, 1) == "3")
+            //The writing of the files is thus much simpler than the rest and is contained mostly in the if condition below
+            //Note however that the NECEMEM.SNX file needs to be inserted into the archive to work in the case of the PS1 content
+            if (language == Language.SP)
             {
-                List<String> filesListToDelete = new List<String> { "CGMODE.SNX", "CGMODEAK.SNX", "CGMODEMO.SNX",
-                "CGMODEMS.SNX", "CGMODEMU.SNX", "CGMODEMZ.SNX", "CGMODENN.SNX", "NECEMEM.SNX", "FGAK12.PNG",
-                "FGAK13.PNG", "FGAK14.PNG", "FGAK15.PNG", "FGMI03.PNG", "FGMI04.PNG", "FGMI05.PNG", "FGMI06.PNG",
-                "FGMS07.PNG", "FGMS08.PNG", "FGMS09.PNG", "FGMS10.PNG", "FGMY11.PNG", "FGMY12.PNG", "FGMY13.PNG",
-                "FGMY14.PNG", "FGMZ12.PNG", "FGMZ13.PNG", "FGMZ14.PNG", "FGMZ15.PNG", "FGRM07.PNG", "FGRM12.PNG",
-                "FGRM13.PNG", "FGRM14.PNG", "FGRM15.PNG" };
+                List<string> filesListToDelete = new List<string> { "AP00.SNX", "CALCNUMBERSRCYGRID.SNX", "CGMODE.SNX",
+                "CGMODEAK.SNX", "CGMODEMO.SNX", "CGMODEMS.SNX", "CGMODEMU.SNX", "CGMODEMZ.SNX", "CGMODENN.SNX",
+                "NECEMEM.SNX", "FGAK12.PNG", "FGAK13.PNG", "FGAK14.PNG", "FGAK15.PNG", "FGMI03.PNG", "FGMI04.PNG",
+                "FGMI05.PNG", "FGMI06.PNG", "FGMS07.PNG", "FGMS08.PNG", "FGMS09.PNG", "FGMS10.PNG", "FGMY11.PNG",
+                "FGMY12.PNG", "FGMY13.PNG", "FGMY14.PNG", "FGMZ12.PNG", "FGMZ13.PNG", "FGMZ14.PNG", "FGMZ15.PNG",
+                "FGRM07.PNG", "FGRM12.PNG", "FGRM13.PNG", "FGRM14.PNG", "FGRM15.PNG" };
                 filesListToDelete.AddRange(filesListToNotUpdate);
 
                 //Delete the files that might not be used to have a clean directory
@@ -268,21 +203,35 @@ namespace ONE_Eternal_Patch
                     outputSpanishFile.Close();
                 }
 
-                richTextBox.Text += "\nDone!";
-                richTextBox.Text += "\nPress any key to continue.";
+                //In case of the PS1 content, the NECEMEM.SNX file still needs to be inserted
+                patchFilesList.Clear();
 
-                return;
+                if (PS1Content)
+                    patchFilesList.Add(afsPatchFiles.FindFile("FV_PS1_NECEMEM.SNX"));
+
+                else
+                    patchFilesList.Add(afsPatchFiles.FindFile("FV_OG_NECEMEM.SNX"));
+                
+                patchFilesList.Last().Name = "NECEMEM.SNX";
             }
 
             //////////////////////////////
             //OPENING OF THE GAME ARCHIVE (SCRIPTS AND IMAGES)
             //////////////////////////////
-            string originalFileName = inputEdition.Substring(0, 1) == "1" ? inputLanguage.Substring(0, 1) != "4" ? "one" : "one_cn" : "lcsebody1";
+            string originalFileName = "one";
+
+            if (edition == Edition.VI)
+                originalFileName = "lcsebody1";
+            else if (language == Language.CH)
+                originalFileName = "one_cn";
+            else if (language == Language.KR)
+                originalFileName = "one_kr";
+
             try
             {
                 originalFile = new ArcView(path + originalFileName);
             }
-            catch (System.IO.FileNotFoundException e)
+            catch (FileNotFoundException e)
             {
                 richTextBox.ForeColor = Color.Red;
                 richTextBox.Text += "Error: the file \"" + originalFileName + "\" was not found.\n" +
@@ -309,7 +258,7 @@ namespace ONE_Eternal_Patch
             {
                 arcOriginalFiles = lst.TryOpen(originalFile);
             }
-            catch (System.UnauthorizedAccessException e)
+            catch (UnauthorizedAccessException e)
             {
                 richTextBox.ForeColor = Color.Red;
                 richTextBox.Text += "Error: the file \"" + originalFileName + ".lst\" can't be accessed.\n" +
@@ -327,7 +276,7 @@ namespace ONE_Eternal_Patch
             {
                 afsOriginalFiles = arcOriginalFiles.CreateFileSystem();
             }
-            catch (System.NullReferenceException e)
+            catch (NullReferenceException e)
             {
                 richTextBox.ForeColor = Color.Red;
                 richTextBox.Text += "Error: the file \"" + originalFileName + ".lst\" was not found.\n" +
@@ -346,13 +295,13 @@ namespace ONE_Eternal_Patch
             //OPENING OF THE GAME ARCHIVE (VOICES)
             //////////////////////////////
             string originalSNDFileName = "SoundPackSEVo";
-            if (inputPS1.Substring(0, 1) == "1" && (inputLanguage.Substring(0, 1) == "1" || inputLanguage.Substring(0, 1) == "2"))
+            if (PS1Content && (language == Language.JP || language == Language.EN || language == Language.SP))
             {
                 try
                 {
                     originalSNDFile = new ArcView(path + originalSNDFileName);
                 }
-                catch (System.IO.FileNotFoundException e)
+                catch (FileNotFoundException e)
                 {
                     richTextBox.ForeColor = Color.Red;
                     richTextBox.Text += "Error: the file \"" + originalSNDFileName + "\" was not found.\n" +
@@ -360,7 +309,7 @@ namespace ONE_Eternal_Patch
                         "Error details: " + e;
                     return;
                 }
-                catch (System.UnauthorizedAccessException e)
+                catch (UnauthorizedAccessException e)
                 {
                     richTextBox.ForeColor = Color.Red;
                     richTextBox.Text += "Error: the file \"" + originalSNDFileName + "\" can't be accessed.\n" +
@@ -379,7 +328,7 @@ namespace ONE_Eternal_Patch
                 {
                     arcOriginalSNDFiles = lst.TryOpen(originalSNDFile);
                 }
-                catch (System.UnauthorizedAccessException e)
+                catch (UnauthorizedAccessException e)
                 {
                     richTextBox.ForeColor = Color.Red;
                     richTextBox.Text += "Error: the file \"" + originalSNDFileName + ".lst\" can't be accessed.\n" +
@@ -397,7 +346,7 @@ namespace ONE_Eternal_Patch
                 {
                     afsOriginalSNDFiles = arcOriginalSNDFiles.CreateFileSystem();
                 }
-                catch (System.NullReferenceException e)
+                catch (NullReferenceException e)
                 {
                     richTextBox.ForeColor = Color.Red;
                     richTextBox.Text += "Error: the file \"" + originalSNDFileName + ".lst\" was not found.\n" +
@@ -418,6 +367,7 @@ namespace ONE_Eternal_Patch
             //////////////////////////////
             bool savesToConvert = false;
 
+            int i = 0;
             int choiceFlagsNumberFV = 198;
             int choiceFlagsNumberVI = 203;
             int choiceFlagsNumberFVEP20 = 201;
@@ -432,17 +382,17 @@ namespace ONE_Eternal_Patch
             int textFlagsNumberVIEP20 = 32674;
             List<StandardSave> standardSavesToConvertList = new List<StandardSave>();
 
-            String savesDirectoryName = path + "sav";
+            string savesDirectoryName = path + (language != Language.KR ? "sav" : "sav_kr");
             DirectoryInfo savesDir = new DirectoryInfo(savesDirectoryName);
 
             //The Vista Edition can have its saves either in the sav folder or in C:\Users\[Current User]\AppData\Local\VirtualStore\Program Files (x86)\nexton\one_fv\sav
-            if (inputPS1.Substring(0, 1) == "1" && inputEdition.Substring(0, 1) == "2" && !savesDir.Exists)
+            if (PS1Content && edition == Edition.VI && !savesDir.Exists)
             {
                 savesDirectoryName = System.Environment.GetEnvironmentVariable("USERPROFILE") + "\\AppData\\Local\\VirtualStore\\Program Files (x86)\\nexton\\one_fv\\sav";
                 savesDir = new DirectoryInfo(savesDirectoryName);
             }
 
-            if (inputPS1.Substring(0, 1) == "1" && savesDir.Exists && (inputLanguage.Substring(0, 1) == "1" || inputLanguage.Substring(0, 1) == "2"))
+            if (PS1Content && savesDir.Exists)
             {
                 richTextBox.Text += "Creation of the saves backup and saves control...";
                 richTextBox.Update();
@@ -458,7 +408,7 @@ namespace ONE_Eternal_Patch
                 if (File.Exists(savesDirectoryName + "\\SAVE__.LCS"))
                 {
                     FileInfo saveFile = new FileInfo(savesDirectoryName + "\\SAVE__.LCS");
-                    if (inputEdition.Substring(0, 1) == "1" && (saveFile.Length == VISaveSize || saveFile.Length == VIEP20SaveSize))
+                    if (edition == Edition.FV && (saveFile.Length == VISaveSize || saveFile.Length == VIEP20SaveSize))
                     {
                         richTextBox.ForeColor = Color.Red;
                         richTextBox.Text += "Error: your global save (SAVE__.LCS) was detected as being made with the " +
@@ -466,7 +416,7 @@ namespace ONE_Eternal_Patch
                             "Are you sure of your choice?";
                         return;
                     }
-                    else if (inputEdition.Substring(0, 1) == "2" && (saveFile.Length == FVSaveSize || saveFile.Length == FVEP20SaveSize))
+                    else if (edition == Edition.VI && (saveFile.Length == FVSaveSize || saveFile.Length == FVEP20SaveSize))
                     {
                         richTextBox.ForeColor = Color.Red;
                         richTextBox.Text += "Error: your global save (SAVE__.LCS) was detected as being made with the " +
@@ -482,8 +432,8 @@ namespace ONE_Eternal_Patch
                         return;
                     }
 
-                    if ((inputEdition.Substring(0, 1) == "1" && saveFile.Length == FVSaveSize) ||
-                        (inputEdition.Substring(0, 1) == "2" && saveFile.Length == VISaveSize))
+                    if ((edition == Edition.FV && saveFile.Length == FVSaveSize) ||
+                        (edition == Edition.VI && saveFile.Length == VISaveSize))
                     {
                         Directory.CreateDirectory(backupDirectoryPath);
                         File.Copy(savesDirectoryName + "\\SAVE__.LCS", backupDirectoryPath + "\\SAVE__.LCS");
@@ -493,12 +443,12 @@ namespace ONE_Eternal_Patch
 
                 //SAVE00.LCS to SAVE99.LCS
                 richTextBox.Text += " (save(s): ";
-                for (int j = 0 ; j <= 99 ; j++)
+                for (i = 0 ; i <= 99 ; i++)
                 {
-                    if (File.Exists(savesDirectoryName + "\\SAVE" + j.ToString().PadLeft(2, '0') + ".LCS"))
+                    if (File.Exists(savesDirectoryName + "\\SAVE" + i.ToString().PadLeft(2, '0') + ".LCS"))
                     {
-                        BinaryReader br = new BinaryReader(File.OpenRead(savesDirectoryName + "\\SAVE" + j.ToString().PadLeft(2, '0') + ".LCS"));
-                        richTextBox.Text += j.ToString().PadLeft(2, '0') + " ";
+                        BinaryReader br = new BinaryReader(File.OpenRead(savesDirectoryName + "\\SAVE" + i.ToString().PadLeft(2, '0') + ".LCS"));
+                        richTextBox.Text += i.ToString().PadLeft(2, '0') + " ";
                         richTextBox.Update();
 
                         //The first part of the save file is constitued of a PNG with a resolution of 128x96.
@@ -540,35 +490,34 @@ namespace ONE_Eternal_Patch
                         int choiceFlagsNumber = -1;
                         int CGFlagsNumber = -1;
                         int textFlagsNumber = -1;
-                        bool isFV = inputEdition.Substring(0, 1) == "1";
 
-                        for (int k = 0; k + offsetFinPNG < br.BaseStream.Length; k++)
+                        for (int j = 0; j + offsetFinPNG < br.BaseStream.Length; j++)
                         {
                             b = br.ReadByte();
 
-                            if (( isFV && (k == 0 || k == 300 || k == 11488 || k == 11512 || k == 11516)) ||
-                                (!isFV && (k == 0 || k == 336 || k == 11576 || k == 11600 || k == 11604)))
+                            if ((edition == Edition.FV && (j == 0 || j == 300 || j == 11488 || j == 11512 || j == 11516)) ||
+                                (edition == Edition.VI && (j == 0 || j == 336 || j == 11576 || j == 11600 || j == 11604)))
                                 bytesBuffer[0] = (byte)(b ^ (byte)saveKey);
-                            else if (( isFV && (k == 1 || k == 301 || k == 11489 || k == 11513 || k == 11517)) ||
-                                     (!isFV && (k == 1 || k == 337 || k == 11577 || k == 11601 || k == 11605)))
+                            else if ((edition == Edition.FV && (j == 1 || j == 301 || j == 11489 || j == 11513 || j == 11517)) ||
+                                     (edition == Edition.VI && (j == 1 || j == 337 || j == 11577 || j == 11601 || j == 11605)))
                                 bytesBuffer[1] = (byte)(b ^ (byte)saveKey);
-                            else if (( isFV && (k == 2 || k == 302 || k == 11490 || k == 11514 || k == 11518)) ||
-                                     (!isFV && (k == 2 || k == 338 || k == 11578 || k == 11602 || k == 11606)))
+                            else if ((edition == Edition.FV && (j == 2 || j == 302 || j == 11490 || j == 11514 || j == 11518)) ||
+                                     (edition == Edition.VI && (j == 2 || j == 338 || j == 11578 || j == 11602 || j == 11606)))
                                 bytesBuffer[2] = (byte)(b ^ (byte)saveKey);
                             //SAVE SIZE
-                            else if (k == 3)
+                            else if (j == 3)
                             {
                                 bytesBuffer[3] = (byte)(b ^ (byte)saveKey);
                                 saveSize = BitConverter.ToInt32(bytesBuffer, 0);
                             }
                             //ID
-                            else if ((isFV && k == 303) || (!isFV && k == 339))
+                            else if ((edition == Edition.FV && j == 303) || (edition == Edition.VI && j == 339))
                             {
                                 bytesBuffer[3] = (byte)(b ^ (byte)saveKey);
                                 id = BitConverter.ToInt32(bytesBuffer, 0);
                             }
                             //SUB SCRIPT NAME
-                            else if ((isFV && k >= 916 && k <= 979 && !subScriptNameFound) || (!isFV && k >= 1004 && k <= 1067 && !subScriptNameFound))
+                            else if ((edition == Edition.FV && j >= 916 && j <= 979 && !subScriptNameFound) || (edition == Edition.VI && j >= 1004 && j <= 1067 && !subScriptNameFound))
                             {
                                 if ((byte)(b ^ (byte)saveKey) != 0b00)
                                     subScriptName += (char)(b ^ (byte)saveKey);
@@ -576,7 +525,7 @@ namespace ONE_Eternal_Patch
                                     subScriptNameFound = true;
                             }
                             //SCRIPT NAME
-                            else if ((isFV && k >= 7128 && k <= 7191 && !scriptNameFound) || (!isFV && k >= 7216 && k <= 7279 && !subScriptNameFound))
+                            else if ((edition == Edition.FV && j >= 7128 && j <= 7191 && !scriptNameFound) || (edition == Edition.VI && j >= 7216 && j <= 7279 && !subScriptNameFound))
                             {
                                 if ((byte)(b ^ (byte)saveKey) != 0b00)
                                     scriptName += (char)(b ^ (byte)saveKey);
@@ -584,19 +533,19 @@ namespace ONE_Eternal_Patch
                                     scriptNameFound = true;
                             }
                             //NUMBER OF CHOICE FLAGS
-                            else if ((isFV && k == 11491) || (!isFV && k == 11579))
+                            else if ((edition == Edition.FV && j == 11491) || (edition == Edition.VI && j == 11579))
                             {
                                 bytesBuffer[3] = (byte)(b ^ (byte)saveKey);
                                 choiceFlagsNumber = BitConverter.ToInt32(bytesBuffer, 0);
                             }
                             //NUMBER OF PARAMETER/CG FLAGS
-                            else if ((isFV && k == 11515) || (!isFV && k == 11603))
+                            else if ((edition == Edition.FV && j == 11515) || (edition == Edition.VI && j == 11603))
                             {
                                 bytesBuffer[3] = (byte)(b ^ (byte)saveKey);
                                 CGFlagsNumber = BitConverter.ToInt32(bytesBuffer, 0);
                             }
                             //NUMBER OF TEXT FLAGS
-                            else if ((isFV && k == 11519) || (!isFV && k == 11607))
+                            else if ((edition == Edition.FV && j == 11519) || (edition == Edition.VI && j == 11607))
                             {
                                 bytesBuffer[3] = (byte)(b ^ (byte)saveKey);
                                 textFlagsNumber = BitConverter.ToInt32(bytesBuffer, 0);
@@ -607,49 +556,51 @@ namespace ONE_Eternal_Patch
                                 saveKey = 0;
                         }
 
-                        if (inputEdition.Substring(0, 1) == "1" && choiceFlagsNumber == choiceFlagsNumberVI && CGFlagsNumber == CGFlagsNumberVI && textFlagsNumber == textFlagsNumberVI)
+                        if (edition == Edition.FV && choiceFlagsNumber == choiceFlagsNumberVI && CGFlagsNumber == CGFlagsNumberVI && textFlagsNumber == textFlagsNumberVI)
                         {
                             richTextBox.ForeColor = Color.Red;
-                            richTextBox.Text += "Error: your save SAVE" + j.ToString().PadLeft(2, '0') + ".LCS was detected as being made with the " +
+                            richTextBox.Text += "Error: your save SAVE" + i.ToString().PadLeft(2, '0') + ".LCS was detected as being made with the " +
                                 "Vista Edition but you've selected the Full Voice Edition.\n" +
                                 "Are you sure of your choice?";
                             return;
                         }
-                        else if (inputEdition.Substring(0, 1) == "2" && choiceFlagsNumber == choiceFlagsNumberFV && CGFlagsNumber == CGFlagsNumberFV && textFlagsNumber == textFlagsNumberFV)
+                        else if (edition == Edition.VI && choiceFlagsNumber == choiceFlagsNumberFV && CGFlagsNumber == CGFlagsNumberFV && textFlagsNumber == textFlagsNumberFV)
                         {
                             richTextBox.ForeColor = Color.Red;
-                            richTextBox.Text += "Error: your save SAVE" + j.ToString().PadLeft(2, '0') + ".LCS was detected as being made with the " +
+                            richTextBox.Text += "Error: your save SAVE" + i.ToString().PadLeft(2, '0') + ".LCS was detected as being made with the " +
                                 "Full Voice Edition but you've selected the Vista Edition.\n" +
                                 "Are you sure of your choice?";
                             return;
                         }
-                        else if ((inputEdition.Substring(0, 1) == "1" && choiceFlagsNumber == choiceFlagsNumberFV && CGFlagsNumber == CGFlagsNumberFV && textFlagsNumber == textFlagsNumberFV) ||
-                                 (inputEdition.Substring(0, 1) == "2" && choiceFlagsNumber == choiceFlagsNumberVI && CGFlagsNumber == CGFlagsNumberVI && textFlagsNumber == textFlagsNumberVI))
+                        else if ((edition == Edition.FV && choiceFlagsNumber == choiceFlagsNumberFV && CGFlagsNumber == CGFlagsNumberFV && textFlagsNumber == textFlagsNumberFV) ||
+                                 (edition == Edition.VI && choiceFlagsNumber == choiceFlagsNumberVI && CGFlagsNumber == CGFlagsNumberVI && textFlagsNumber == textFlagsNumberVI))
                         {
-                            StandardSave currentSave = new StandardSave();
-                            currentSave.name = "SAVE" + j.ToString().PadLeft(2, '0') + ".LCS";
-                            currentSave.size = saveSize;
-                            currentSave.id = id;
-                            currentSave.subScriptName = subScriptName;
-                            currentSave.scriptName = scriptName;
-                            currentSave.choiceFlagsNumber = choiceFlagsNumber;
-                            currentSave.CGFlagsNumber = CGFlagsNumber;
-                            currentSave.textFlagsNumber = textFlagsNumber;
+                            StandardSave currentSave = new StandardSave
+                            {
+                                Name = "SAVE" + i.ToString().PadLeft(2, '0') + ".LCS",
+                                Size = saveSize,
+                                Id = id,
+                                SubScriptName = subScriptName,
+                                ScriptName = scriptName,
+                                ChoiceFlagsNumber = choiceFlagsNumber,
+                                CGFlagsNumber = CGFlagsNumber,
+                                TextFlagsNumber = textFlagsNumber,
+                            };
                             standardSavesToConvertList.Add(currentSave);
 
                             savesToConvert = true;
                         }
-                        else if ((inputEdition.Substring(0, 1) == "1" && ((choiceFlagsNumber != choiceFlagsNumberFV && choiceFlagsNumber != choiceFlagsNumberFVEP20) || (CGFlagsNumber != CGFlagsNumberFV && CGFlagsNumber != CGFlagsNumberFVEP20) || (textFlagsNumber != textFlagsNumberFV && textFlagsNumber != textFlagsNumberFVEP20))) ||
-                                 (inputEdition.Substring(0, 1) == "2" && ((choiceFlagsNumber != choiceFlagsNumberVI && choiceFlagsNumber != choiceFlagsNumberVIEP20) || (CGFlagsNumber != CGFlagsNumberVI && CGFlagsNumber != CGFlagsNumberVIEP20) || (textFlagsNumber != textFlagsNumberVI && textFlagsNumber != textFlagsNumberVIEP20))))
+                        else if ((edition == Edition.FV && ((choiceFlagsNumber != choiceFlagsNumberFV && choiceFlagsNumber != choiceFlagsNumberFVEP20) || (CGFlagsNumber != CGFlagsNumberFV && CGFlagsNumber != CGFlagsNumberFVEP20) || (textFlagsNumber != textFlagsNumberFV && textFlagsNumber != textFlagsNumberFVEP20))) ||
+                                 (edition == Edition.VI && ((choiceFlagsNumber != choiceFlagsNumberVI && choiceFlagsNumber != choiceFlagsNumberVIEP20) || (CGFlagsNumber != CGFlagsNumberVI && CGFlagsNumber != CGFlagsNumberVIEP20) || (textFlagsNumber != textFlagsNumberVI && textFlagsNumber != textFlagsNumberVIEP20))))
                         {
                             richTextBox.ForeColor = Color.Red;
-                            richTextBox.Text += "Error: your save SAVE" + j.ToString().PadLeft(2, '0') + ".LCS seems corrupted.\n" +
+                            richTextBox.Text += "Error: your save SAVE" + i.ToString().PadLeft(2, '0') + ".LCS seems corrupted.\n" +
                                 "Remove it from your sav folder.";
                             return;
                         }
 
                         Directory.CreateDirectory(backupDirectoryPath);
-                        File.Copy(savesDirectoryName + "\\SAVE" + j.ToString().PadLeft(2, '0') + ".LCS", backupDirectoryPath + "\\SAVE" + j.ToString().PadLeft(2, '0') + ".LCS");
+                        File.Copy(savesDirectoryName + "\\SAVE" + i.ToString().PadLeft(2, '0') + ".LCS", backupDirectoryPath + "\\SAVE" + i.ToString().PadLeft(2, '0') + ".LCS");
                         br.Close();
                     }
                 }
@@ -664,17 +615,17 @@ namespace ONE_Eternal_Patch
             List<Entry> originalFilesList = new List<Entry>();
             originalFilesList = (List<Entry>)afsOriginalFiles.GetFiles();
 
-            int i = 0;
+            i = 0;
             foreach (Entry entry in originalFilesList)
             {
-                String fileName = string.Empty;
+                string fileName = string.Empty;
                 if (patchFilesList.ToArray().Length > i)
                 {
                     fileName = ((Entry)patchFilesList.ToArray()[i]).Name;
                 }
 
                 //Skip the PS1 content if the user doesn't want it
-                if (inputPS1.Substring(0, 1) == "2" && filesListToNotUpdate.Any(entry.Name.Contains))
+                if (!PS1Content && filesListToNotUpdate.Any(entry.Name.Contains))
                 {
                     continue;
                 }
@@ -732,7 +683,7 @@ namespace ONE_Eternal_Patch
             //EXTRACTION OF THE ORIGINAL FILES (VOICES)
             //////////////////////////////
             long patchedSNDArchiveSize = 221739541;
-            if (inputPS1.Substring(0, 1) == "1" && (inputLanguage.Substring(0, 1) == "1" || inputLanguage.Substring(0, 1) == "2") && originalSNDFile.MaxOffset < patchedSNDArchiveSize)
+            if (PS1Content && (language == Language.JP || language == Language.EN || language == Language.SP) && originalSNDFile.MaxOffset < patchedSNDArchiveSize)
             {
                 List<Entry> originalSNDFilesList = new List<Entry>();
                 originalSNDFilesList = (List<Entry>)afsOriginalSNDFiles.GetFiles();
@@ -740,7 +691,7 @@ namespace ONE_Eternal_Patch
                 i = 0;
                 foreach (Entry entry in originalSNDFilesList)
                 {
-                    String fileName = string.Empty;
+                    string fileName = string.Empty;
                     if (patchSNDFilesList.ToArray().Length > i)
                     {
                         fileName = ((Entry)patchSNDFilesList.ToArray()[i]).Name;
@@ -802,7 +753,7 @@ namespace ONE_Eternal_Patch
             //The file one_TEMP will be written directly into binary
             BinaryWriter bw = null;
             bw = new BinaryWriter(File.Create("./one_TEMP.lst"));
-            Boolean headerWritten = false;
+            bool headerWritten = false;
             long offset = 0;
 
             //The key is always equal to 01 in hexa (at least for ONE), it's possible to change it without any impact but I don't see the point to do it
@@ -826,9 +777,9 @@ namespace ONE_Eternal_Patch
             foreach (Entry entry in resultFilesList)
             {
                 //We start with the transformation of the data
-                String fileName = entry.Name;
+                string fileName = entry.Name;
                 int pointPosition = fileName.IndexOf(".");
-                String extension = fileName.Substring(pointPosition + 1, fileName.Length - pointPosition - 1);
+                string extension = fileName.Substring(pointPosition + 1, fileName.Length - pointPosition - 1);
 
                 byte[] bufferName = LstOpener.WriteName(fileName.Substring(0, pointPosition), 64, (byte)key, cp932);
                 long fileSize = entry.Size ^ convertedKey;
@@ -894,9 +845,10 @@ namespace ONE_Eternal_Patch
             }
 
             //The original Japanese Full Voice Edition ends with 48 bytes corresponding to the end of a PNG file.
-            //It's not the case for the English translation or the Vista Edition, it doesn't seem to have an impact in the game and it's very probably a mistake since the last file is also a PNG file (the value is duplicated).
+            //The Spanish translation also has it since the developers never touched to the ONE archive.
+            //It's not the case for the other translations or the Vista Edition, it doesn't seem to have an impact in the game and it's very probably a mistake since the last file is also a PNG file (the value is duplicated).
             //However, I prefer to put it in order to have a faithful recreation of the file.
-            if (inputEdition.Substring(0, 1) == "1" && inputLanguage.Substring(0, 1) == "1")
+            if (edition == Edition.FV && (language == Language.JP || language == Language.SP))
             {
                 List<byte> listByteFinFichier = new List<byte> { 0xa4, 0x01, 0xcc, 0x9c, 0x72, 0x05, 0x0c, 0x0c, 0x33,
                 0x01, 0x47, 0x00, 0x8f, 0x07, 0xef, 0x9f, 0xce, 0xaa, 0x0a, 0x60, 0xb8, 0x6e, 0x5e, 0x0c, 0x7e, 0x0b,
@@ -929,7 +881,7 @@ namespace ONE_Eternal_Patch
             ////////////////////
             //WRITING (VOICES)
             ////////////////////
-            if (inputPS1.Substring(0, 1) == "1" && (inputLanguage.Substring(0, 1) == "1" || inputLanguage.Substring(0, 1) == "2") && originalSNDFile.MaxOffset < patchedSNDArchiveSize)
+            if (PS1Content && (language == Language.JP || language == Language.EN || language == Language.SP) && originalSNDFile.MaxOffset < patchedSNDArchiveSize)
             {
                 richTextBox.Text += "Writing of the voices...\n";
 
@@ -948,9 +900,9 @@ namespace ONE_Eternal_Patch
                 foreach (Entry entry in resultSNDFilesList)
                 {
                     //We start with the transformation of the data
-                    String fileName = entry.Name;
+                    string fileName = entry.Name;
                     int pointPosition = fileName.IndexOf(".");
-                    String extension = fileName.Substring(pointPosition + 1, fileName.Length - pointPosition - 1);
+                    string extension = fileName.Substring(pointPosition + 1, fileName.Length - pointPosition - 1);
 
                     byte[] bufferName = LstOpener.WriteName(fileName.Substring(0, pointPosition), 64, (byte)key, cp932);
                     long fileSize = entry.Size ^ convertedKey;
@@ -1016,7 +968,7 @@ namespace ONE_Eternal_Patch
                 File.Move("one_SND_TEMP", originalSNDFile.Name);
                 File.Move("one_SND_TEMP.lst", originalSNDFile.Name + ".lst");
             }
-            else if (inputPS1.Substring(0, 1) == "1" && (inputLanguage.Substring(0, 1) == "1" || inputLanguage.Substring(0, 1) == "2"))
+            else if (PS1Content && (language == Language.JP || language == Language.EN || language == Language.SP))
             {
                 richTextBox.Text += "New voices already added.\n";
             }
@@ -1029,10 +981,10 @@ namespace ONE_Eternal_Patch
             ////////////////////
             //SAVES CONVERSION
             ////////////////////
-            if (!savesToConvert && inputPS1.Substring(0, 1) == "1" && (inputLanguage.Substring(0, 1) == "1" || inputLanguage.Substring(0, 1) == "2"))
+            if (!savesToConvert && PS1Content)
             {
                 richTextBox.Text += "No save needing a conversion was found so no conversion was made.";
-                if (inputEdition.Substring(0, 1) == "2")
+                if (edition == Edition.VI)
                     richTextBox.Text += " If the patch hasn't found your current save(s) please check the README.";
                 richTextBox.Text += "\n";
             }
@@ -1047,25 +999,25 @@ namespace ONE_Eternal_Patch
                     bw = new BinaryWriter(File.Create(savesDirectoryName + "\\SAVE__temp.LCS"));
 
                     //The save of the Vista Edition starts by the string "DEFAULTVERSION" followed by two 00 bytes
-                    if (inputEdition.Substring(0, 1) == "2")
+                    if (edition == Edition.VI)
                         bw.Write(br.ReadBytes(16));
 
                     //Writing of the first and second parts of the save.
                     //The first part is constitued of random 4 bytes numbers.
                     //The second part of the save is constitued of flags for parameters and CGs.
                     //To decrypt the second part you need to do a XOR with the correponding random numbers of the previous part.
-                    for (int j = 0; j < 2; j++)
+                    for (i = 0; i < 2; i++)
                     {
-                        if (inputEdition.Substring(0, 1) == "1")
+                        if (edition == Edition.FV)
                         {
                             bw.Write(br.ReadBytes(CGFlagsNumberFV * 4));
-                            for (int k = 0; k < CGFlagsNumberFVEP20 - CGFlagsNumberFV; k++)
+                            for (int j = 0; j < CGFlagsNumberFVEP20 - CGFlagsNumberFV; j++)
                                 bw.Write(0);
                         }
-                        else if (inputEdition.Substring(0, 1) == "2")
+                        else if (edition == Edition.VI)
                         {
                             bw.Write(br.ReadBytes(CGFlagsNumberVI * 4));
-                            for (int k = 0; k < CGFlagsNumberVIEP20 - CGFlagsNumberVI; k++)
+                            for (int j = 0; j < CGFlagsNumberVIEP20 - CGFlagsNumberVI; j++)
                                 bw.Write(0);
                         }
                     }
@@ -1073,18 +1025,18 @@ namespace ONE_Eternal_Patch
                     //Writing of the third and fourth parts of the save.
                     //They're the same things as the two previous parts except the flags are on 1 byte
                     //and that they're used to indicate the ids of the texts already read.
-                    for (int j = 0; j < 2; j++)
+                    for (i = 0; i < 2; i++)
                     {
-                        if (inputEdition.Substring(0, 1) == "1")
+                        if (edition == Edition.FV)
                         {
                             bw.Write(br.ReadBytes(textFlagsNumberFV));
-                            for (int k = 0; k < textFlagsNumberFVEP20 - textFlagsNumberFV; k++)
+                            for (int j = 0; j < textFlagsNumberFVEP20 - textFlagsNumberFV; j++)
                                 bw.Write((byte)0x00);
                         }
-                        else if (inputEdition.Substring(0, 1) == "2")
+                        else if (edition == Edition.VI)
                         {
                             bw.Write(br.ReadBytes(textFlagsNumberVI));
-                            for (int k = 0; k < textFlagsNumberVIEP20 - textFlagsNumberVI; k++)
+                            for (int j = 0; j < textFlagsNumberVIEP20 - textFlagsNumberVI; j++)
                                 bw.Write((byte)0x00);
                         }
                     }
@@ -1099,10 +1051,10 @@ namespace ONE_Eternal_Patch
                 string savesNotOK = "";
                 foreach (StandardSave standardSave in standardSavesToConvertList)
                 {
-                    br = new BinaryReader(File.OpenRead(savesDirectoryName + "\\"+standardSave.name));
-                    bw = new BinaryWriter(File.Create(savesDirectoryName + "\\TEMP" + standardSave.name));
+                    br = new BinaryReader(File.OpenRead(savesDirectoryName + "\\"+standardSave.Name));
+                    bw = new BinaryWriter(File.Create(savesDirectoryName + "\\TEMP" + standardSave.Name));
 
-                    richTextBox.Text += standardSave.name.Substring(4, 2) + " ";
+                    richTextBox.Text += standardSave.Name.Substring(4, 2) + " ";
                     richTextBox.Update();
 
                     //First part of the save file with the PNG.
@@ -1131,99 +1083,98 @@ namespace ONE_Eternal_Patch
 
                     //We update the save data
                     byte[] saveSize = new byte[4];
-                    if (inputEdition.Substring(0, 1) == "1")
-                        saveSize = BitConverter.GetBytes(standardSave.size + ((choiceFlagsNumberFVEP20 - choiceFlagsNumberFV) * 4));
-                    else if (inputEdition.Substring(0, 1) == "2")
-                        saveSize = BitConverter.GetBytes(standardSave.size + ((choiceFlagsNumberVIEP20 - choiceFlagsNumberVI) * 4));
+                    if (edition == Edition.FV)
+                        saveSize = BitConverter.GetBytes(standardSave.Size + ((choiceFlagsNumberFVEP20 - choiceFlagsNumberFV) * 4));
+                    else if (edition == Edition.VI)
+                        saveSize = BitConverter.GetBytes(standardSave.Size + ((choiceFlagsNumberVIEP20 - choiceFlagsNumberVI) * 4));
 
                     byte[] choiceFlagsNumber = new byte[4];
-                    if (inputEdition.Substring(0, 1) == "1")
+                    if (edition == Edition.FV)
                         choiceFlagsNumber = BitConverter.GetBytes(choiceFlagsNumberFVEP20);
-                    else if (inputEdition.Substring(0, 1) == "2")
+                    else if (edition == Edition.VI)
                         choiceFlagsNumber = BitConverter.GetBytes(choiceFlagsNumberVIEP20);
                     
                     byte[] CGFlagsNumber = new byte[4];
-                    if (inputEdition.Substring(0, 1) == "1")
+                    if (edition == Edition.FV)
                         CGFlagsNumber = BitConverter.GetBytes(CGFlagsNumberFVEP20);
-                    else if (inputEdition.Substring(0, 1) == "2")
+                    else if (edition == Edition.VI)
                         CGFlagsNumber = BitConverter.GetBytes(CGFlagsNumberVIEP20);
 
                     byte[] textFlagsNumber = new byte[4];
-                    if (inputEdition.Substring(0, 1) == "1")
+                    if (edition == Edition.FV)
                         textFlagsNumber = BitConverter.GetBytes(textFlagsNumberFVEP20);
-                    else if (inputEdition.Substring(0, 1) == "2")
+                    else if (edition == Edition.VI)
                         textFlagsNumber = BitConverter.GetBytes(textFlagsNumberVIEP20);
 
                     byte[] newChoicesFlags = new byte[4];
-                    if (inputEdition.Substring(0, 1) == "1")
+                    if (edition == Edition.FV)
                         newChoicesFlags = new byte[((choiceFlagsNumberFVEP20 - choiceFlagsNumberFV) * 4)];
-                    else if (inputEdition.Substring(0, 1) == "2")
+                    else if (edition == Edition.VI)
                         newChoicesFlags = new byte[((choiceFlagsNumberVIEP20 - choiceFlagsNumberVI) * 4)];
 
                     for (int j = 0; j < newChoicesFlags.Length; j++)
                         newChoicesFlags[j] = 0x00;
 
                     //Second part composed of all the other save data.
-                    bool isFV = inputEdition.Substring(0, 1) == "1";
                     int saveKey = 0;
-                    for (int j = 0; j + offsetFinPNG < br.BaseStream.Length; j++)
+                    for (i = 0; i + offsetFinPNG < br.BaseStream.Length; i++)
                     {
                         b = br.ReadByte();
 
                         //SAVE SIZE
-                        if (j == 0)
+                        if (i == 0)
                             saveSize[0] ^= (byte)saveKey;
-                        else if (j == 1)
+                        else if (i == 1)
                             saveSize[1] ^= (byte)saveKey;
-                        else if (j == 2)
+                        else if (i == 2)
                             saveSize[2] ^= (byte)saveKey;
-                        else if (j == 3)
+                        else if (i == 3)
                         {
                             saveSize[3] ^= (byte)saveKey;
                             bw.Write(saveSize);
                         }
                         //NUMBER OF CHOICE FLAGS
-                        else if ((isFV && j == 11488) || (!isFV && j == 11576))
+                        else if ((edition == Edition.FV && i == 11488) || (edition == Edition.VI && i == 11576))
                             choiceFlagsNumber[0] ^= (byte)saveKey;
-                        else if ((isFV && j == 11489) || (!isFV && j == 11577))
+                        else if ((edition == Edition.FV && i == 11489) || (edition == Edition.VI && i == 11577))
                             choiceFlagsNumber[1] ^= (byte)saveKey;
-                        else if ((isFV && j == 11490) || (!isFV && j == 11578))
+                        else if ((edition == Edition.FV && i == 11490) || (edition == Edition.VI && i == 11578))
                             choiceFlagsNumber[2] ^= (byte)saveKey;
-                        else if ((isFV && j == 11491) || (!isFV && j == 11579))
+                        else if ((edition == Edition.FV && i == 11491) || (edition == Edition.VI && i == 11579))
                         {
                             choiceFlagsNumber[3] ^= (byte)saveKey;
                             bw.Write(choiceFlagsNumber);
                         }
                         //NUMBER OF PARAMETER/CG FLAGS
-                        else if ((isFV && j == 11512) || (!isFV && j == 11600))
+                        else if ((edition == Edition.FV && i == 11512) || (edition == Edition.VI && i == 11600))
                             CGFlagsNumber[0] ^= (byte)saveKey;
-                        else if ((isFV && j == 11513) || (!isFV && j == 11601))
+                        else if ((edition == Edition.FV && i == 11513) || (edition == Edition.VI && i == 11601))
                             CGFlagsNumber[1] ^= (byte)saveKey;
-                        else if ((isFV && j == 11514) || (!isFV && j == 11602))
+                        else if ((edition == Edition.FV && i == 11514) || (edition == Edition.VI && i == 11602))
                             CGFlagsNumber[2] ^= (byte)saveKey;
-                        else if ((isFV && j == 11515) || (!isFV && j == 11603))
+                        else if ((edition == Edition.FV && i == 11515) || (edition == Edition.VI && i == 11603))
                         {
                             CGFlagsNumber[3] ^= (byte)saveKey;
                             bw.Write(CGFlagsNumber);
                         }
                         //NUMBER OF TEXT FLAGS
-                        else if ((isFV && j == 11516) || (!isFV && j == 11604))
+                        else if ((edition == Edition.FV && i == 11516) || (edition == Edition.VI && i == 11604))
                             textFlagsNumber[0] ^= (byte)saveKey;
-                        else if ((isFV && j == 11517) || (!isFV && j == 11605))
+                        else if ((edition == Edition.FV && i == 11517) || (edition == Edition.VI && i == 11605))
                             textFlagsNumber[1] ^= (byte)saveKey;
-                        else if ((isFV && j == 11518) || (!isFV && j == 11606))
+                        else if ((edition == Edition.FV && i == 11518) || (edition == Edition.VI && i == 11606))
                             textFlagsNumber[2] ^= (byte)saveKey;
-                        else if ((isFV && j == 11519) || (!isFV && j == 11607))
+                        else if ((edition == Edition.FV && i == 11519) || (edition == Edition.VI && i == 11607))
                         {
                             textFlagsNumber[3] ^= (byte)saveKey;
                             bw.Write(textFlagsNumber);
                         }
                         //CREATION OF THE NEW CHOICE FLAGS
-                        else if ((isFV && j == ( 13400 + (choiceFlagsNumberFV * 4))) || (!isFV && j == (13624 + (choiceFlagsNumberVI * 4))))
+                        else if ((edition == Edition.FV && i == ( 13400 + (choiceFlagsNumberFV * 4))) || (edition == Edition.VI && i == (13624 + (choiceFlagsNumberVI * 4))))
                         {
-                            for (int k = 0; k < newChoicesFlags.Length; k++)
+                            for (int j = 0; j < newChoicesFlags.Length; j++)
                             {
-                                newChoicesFlags[k] ^= (byte)saveKey;
+                                newChoicesFlags[j] ^= (byte)saveKey;
 
                                 saveKey++;
                                 if (saveKey >= 255)
@@ -1234,7 +1185,7 @@ namespace ONE_Eternal_Patch
                             bw.Write((byte)(b ^ (saveKey - newChoicesFlags.Length) ^ saveKey));
                         }
                         //Since more bytes were added, the rest of the bytes need to be converted again before being inserted
-                        else if ((isFV && j > (13400 + (choiceFlagsNumberFV * 4))) || (!isFV && j > (13624 + (choiceFlagsNumberVI * 4))))
+                        else if ((edition == Edition.FV && i > (13400 + (choiceFlagsNumberFV * 4))) || (edition == Edition.VI && i > (13624 + (choiceFlagsNumberVI * 4))))
                         {
                             int preconversion = saveKey - newChoicesFlags.Length;
                             if (preconversion < 0)
@@ -1252,15 +1203,15 @@ namespace ONE_Eternal_Patch
 
                     br.Close();
                     bw.Close();
-                    File.Delete(savesDirectoryName + "\\" + standardSave.name);
-                    File.Move(savesDirectoryName + "\\TEMP" + standardSave.name, savesDirectoryName + "\\" + standardSave.name);
+                    File.Delete(savesDirectoryName + "\\" + standardSave.Name);
+                    File.Move(savesDirectoryName + "\\TEMP" + standardSave.Name, savesDirectoryName + "\\" + standardSave.Name);
 
-                    if (!isSaveOK(standardSave))
+                    if (!IsSaveOK(standardSave, edition))
                     {
                          if (savesNotOK.Equals(""))
-                            savesNotOK += standardSave.name.Substring(4, 2);
+                            savesNotOK += standardSave.Name.Substring(4, 2);
                          else
-                            savesNotOK += ", " + standardSave.name.Substring(4, 2);
+                            savesNotOK += ", " + standardSave.Name.Substring(4, 2);
                     }
                 }
                 richTextBox.Text = richTextBox.Text.Remove(richTextBox.Text.Length - 1, 1);
@@ -1274,28 +1225,26 @@ namespace ONE_Eternal_Patch
             richTextBox.Text += "\nDone!";
         }
 
-        public static bool isSaveOK (StandardSave standardSave)
+        public static bool IsSaveOK (StandardSave standardSave, Edition edition)
         {
-            bool isFV = inputEdition.Substring(0, 1) == "1";
-
-            if ((standardSave.scriptName.Equals("Ak26") && standardSave.subScriptName.Equals("Ak26") && ((isFV && standardSave.id >= 2613) || (!isFV && standardSave.id >= 2633))) ||
-                (standardSave.scriptName.Equals("DS01") && standardSave.subScriptName.Equals("DS01") && ((isFV && standardSave.id >= 5237) || (!isFV && standardSave.id >= 5269))) ||
-                (standardSave.scriptName.Equals("DS05") && standardSave.subScriptName.Equals("DS05") && ((isFV && standardSave.id >= 7515) || (!isFV && standardSave.id >= 7578))) ||
-                (standardSave.scriptName.Equals("DS07") && standardSave.subScriptName.Equals("DS07") && ((isFV && standardSave.id >= 8399) || (!isFV && standardSave.id >= 8472))) ||
-                (standardSave.scriptName.Equals("DS09") && standardSave.subScriptName.Equals("DS09") && ((isFV && standardSave.id >= 9174) || (!isFV && standardSave.id >= 9259))) ||
-                (standardSave.scriptName.Equals("DS10") && standardSave.subScriptName.Equals("Ds10_a") && ((isFV && standardSave.id >= 10629) || (!isFV && standardSave.id >= 10727))) ||
-                (standardSave.scriptName.Equals("DS18") && standardSave.subScriptName.Equals("DS18") && ((isFV && standardSave.id >= 12547) || (!isFV && standardSave.id >= 12662))) ||
-                (standardSave.scriptName.Equals("DS19") && standardSave.subScriptName.Equals("DS19") && ((isFV && standardSave.id >= 12905) || (!isFV && standardSave.id >= 13024))) ||
-                (standardSave.scriptName.Equals("Mi26") && standardSave.subScriptName.Equals("Mi26") && ((isFV && standardSave.id >= 15280) || (!isFV && standardSave.id >= 15418))) ||
-                (standardSave.scriptName.Equals("Ms22") && standardSave.subScriptName.Equals("Ms22") && ((isFV && standardSave.id >= 16261) || (!isFV && standardSave.id >= 16402))) ||
-                (standardSave.scriptName.Equals("MS25") && standardSave.subScriptName.Equals("MS25") && ((isFV && standardSave.id >= 17149) || (!isFV && standardSave.id >= 17294))) ||
-                (standardSave.scriptName.Equals("MS27") && standardSave.subScriptName.Equals("MS27") && ((isFV && standardSave.id >= 17921) || (!isFV && standardSave.id >= 18076))) ||
-                (standardSave.scriptName.Equals("MY24") && standardSave.subScriptName.Equals("MY24") && ((isFV && standardSave.id >= 19949) || (!isFV && standardSave.id >= 20112))) ||
-                (standardSave.scriptName.Equals("nv30") && standardSave.subScriptName.Equals("nv30") && ((isFV && standardSave.id >= 23707) || (!isFV && standardSave.id >= 23900))) ||
-                (standardSave.scriptName.Equals("RM24") && standardSave.subScriptName.Equals("RM24") && ((isFV && standardSave.id >= 25863) || (!isFV && standardSave.id >= 26083))) ||
-                (standardSave.subScriptName.Equals("SBD25N1") && ((isFV && standardSave.id >= 28294) || (!isFV && standardSave.id >= 28523))) ||
-                (standardSave.scriptName.Equals("RM14") && standardSave.subScriptName.Equals("SBRM14N1") && ((isFV && standardSave.id >= 29315) || (!isFV && standardSave.id >= 29550))) ||
-                (standardSave.scriptName.Equals("RM17") && standardSave.subScriptName.Equals("SBRM17M1") && ((isFV && standardSave.id >= 29540) || (!isFV && standardSave.id >= 29777))))
+            if ((standardSave.ScriptName.Equals("Ak26") && standardSave.SubScriptName.Equals("Ak26") && ((edition == Edition.FV && standardSave.Id >= 2613) || (edition == Edition.VI && standardSave.Id >= 2633))) ||
+                (standardSave.ScriptName.Equals("DS01") && standardSave.SubScriptName.Equals("DS01") && ((edition == Edition.FV && standardSave.Id >= 5237) || (edition == Edition.VI && standardSave.Id >= 5269))) ||
+                (standardSave.ScriptName.Equals("DS05") && standardSave.SubScriptName.Equals("DS05") && ((edition == Edition.FV && standardSave.Id >= 7515) || (edition == Edition.VI && standardSave.Id >= 7578))) ||
+                (standardSave.ScriptName.Equals("DS07") && standardSave.SubScriptName.Equals("DS07") && ((edition == Edition.FV && standardSave.Id >= 8399) || (edition == Edition.VI && standardSave.Id >= 8472))) ||
+                (standardSave.ScriptName.Equals("DS09") && standardSave.SubScriptName.Equals("DS09") && ((edition == Edition.FV && standardSave.Id >= 9174) || (edition == Edition.VI && standardSave.Id >= 9259))) ||
+                (standardSave.ScriptName.Equals("DS10") && standardSave.SubScriptName.Equals("Ds10_a") && ((edition == Edition.FV && standardSave.Id >= 10629) || (edition == Edition.VI && standardSave.Id >= 10727))) ||
+                (standardSave.ScriptName.Equals("DS18") && standardSave.SubScriptName.Equals("DS18") && ((edition == Edition.FV && standardSave.Id >= 12547) || (edition == Edition.VI && standardSave.Id >= 12662))) ||
+                (standardSave.ScriptName.Equals("DS19") && standardSave.SubScriptName.Equals("DS19") && ((edition == Edition.FV && standardSave.Id >= 12905) || (edition == Edition.VI && standardSave.Id >= 13024))) ||
+                (standardSave.ScriptName.Equals("Mi26") && standardSave.SubScriptName.Equals("Mi26") && ((edition == Edition.FV && standardSave.Id >= 15280) || (edition == Edition.VI && standardSave.Id >= 15418))) ||
+                (standardSave.ScriptName.Equals("Ms22") && standardSave.SubScriptName.Equals("Ms22") && ((edition == Edition.FV && standardSave.Id >= 16261) || (edition == Edition.VI && standardSave.Id >= 16402))) ||
+                (standardSave.ScriptName.Equals("MS25") && standardSave.SubScriptName.Equals("MS25") && ((edition == Edition.FV && standardSave.Id >= 17149) || (edition == Edition.VI && standardSave.Id >= 17294))) ||
+                (standardSave.ScriptName.Equals("MS27") && standardSave.SubScriptName.Equals("MS27") && ((edition == Edition.FV && standardSave.Id >= 17921) || (edition == Edition.VI && standardSave.Id >= 18076))) ||
+                (standardSave.ScriptName.Equals("MY24") && standardSave.SubScriptName.Equals("MY24") && ((edition == Edition.FV && standardSave.Id >= 19949) || (edition == Edition.VI && standardSave.Id >= 20112))) ||
+                (standardSave.ScriptName.Equals("nv30") && standardSave.SubScriptName.Equals("nv30") && ((edition == Edition.FV && standardSave.Id >= 23707) || (edition == Edition.VI && standardSave.Id >= 23900))) ||
+                (standardSave.ScriptName.Equals("RM24") && standardSave.SubScriptName.Equals("RM24") && ((edition == Edition.FV && standardSave.Id >= 25863) || (edition == Edition.VI && standardSave.Id >= 26083))) ||
+                (standardSave.SubScriptName.Equals("SBD25N1") && ((edition == Edition.FV && standardSave.Id >= 28294) || (edition == Edition.VI && standardSave.Id >= 28523))) ||
+                (standardSave.ScriptName.Equals("RM14") && standardSave.SubScriptName.Equals("SBRM14N1") && ((edition == Edition.FV && standardSave.Id >= 29315) || (edition == Edition.VI && standardSave.Id >= 29550))) ||
+                (standardSave.ScriptName.Equals("RM17") && standardSave.SubScriptName.Equals("SBRM17M1") && ((edition == Edition.FV && standardSave.Id >= 29540) || (edition == Edition.VI && standardSave.Id >= 29777))))
                 return false;
 
             return true;

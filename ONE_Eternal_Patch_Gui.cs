@@ -10,9 +10,12 @@ namespace ONE_Eternal_Patch
         public ONE_Eternal_Patch_Gui()
         {
             InitializeComponent();
+
+            //Line needed to be able to display Japanese characters in the richTextBox without breaking the font
+            richTextBox.LanguageOption = RichTextBoxLanguageOptions.DualFont | RichTextBoxLanguageOptions.UIFonts;
         }
 
-        private void radioButtonJapaneseAndEnglish_CheckedChanged(object sender, EventArgs e)
+        private void RadioButtonJapaneseAndEnglish_CheckedChanged(object sender, EventArgs e)
         {
             RadioButton rb = sender as RadioButton;
             
@@ -22,10 +25,10 @@ namespace ONE_Eternal_Patch
                 groupBoxEdition.Enabled = true;
             }
 
-            radioButtonsCheckedChanged(sender, e);
+            RadioButtonsCheckedChanged(sender, e);
         }
 
-        private void radioButtonSpanishAndChinese_CheckedChanged(object sender, EventArgs e)
+        private void RadioButtonSpanishChineseAndKorean_CheckedChanged(object sender, EventArgs e)
         {
             RadioButton rb = sender as RadioButton;
 
@@ -36,32 +39,42 @@ namespace ONE_Eternal_Patch
                 radioButtonVista.Checked = false;
             }
 
-            radioButtonsCheckedChanged(sender, e);
+            RadioButtonsCheckedChanged(sender, e);
         }
 
-        private void radioButtonsCheckedChanged(object sender, EventArgs e)
+        private void RadioButtonsCheckedChanged(object sender, EventArgs e)
         {
             //Reset Natsuki's sprite if the user changes an option
             pictureBox.Image = ONE_Eternal_Patch_GUI.Properties.Resources.CGNT01;
 
             if (textBox.Text.Length <= 0 ||
-                (!radioButtonJapanese.Checked && !radioButtonEnglish.Checked && !radioButtonSpanish.Checked && !radioButtonChinese.Checked) ||
+                (!radioButtonJapanese.Checked && !radioButtonEnglish.Checked && !radioButtonSpanish.Checked && !radioButtonChinese.Checked && !radioButtonKorean.Checked) ||
                 ((radioButtonJapanese.Checked || radioButtonEnglish.Checked) && !radioButtonFullVoice.Checked && !radioButtonVista.Checked) ||
-                (!radioButtonEnableCGs.Checked && !radioButtonDisableCGs.Checked) ||
-                (!radioButtonAllAges.Checked && !radioButtonHScenes.Checked))
+                ((radioButtonJapanese.Checked || radioButtonEnglish.Checked || radioButtonSpanish.Checked || radioButtonChinese.Checked) && !radioButtonAllAges.Checked && !radioButtonHScenes.Checked) ||
+                (!radioButtonEnablePS1.Checked && !radioButtonDisablePS1.Checked) ||
+                (!radioButtonKorean.Checked && !radioButtonAllAges.Checked && !radioButtonHScenes.Checked) ||
+                (!radioButtonEnableMiscellaneous.Checked && !radioButtonDisableMiscellaneous.Checked))
                 buttonPatch.Enabled = false;
             else
                 buttonPatch.Enabled = true;
 
-            if (radioButtonJapanese.Checked || radioButtonEnglish.Checked)
+            if (radioButtonJapanese.Checked || radioButtonEnglish.Checked || radioButtonSpanish.Checked)
                 groupBoxPS1.Text = "PS1 (New CGs + Natsuki's route)";
-            else if (radioButtonSpanish.Checked || radioButtonChinese.Checked)
+            else if (radioButtonChinese.Checked || radioButtonKorean.Checked)
                 groupBoxPS1.Text = "PS1 (New CGs)";
             else
                 groupBoxPS1.Text = "PS1";
+
+            if (radioButtonKorean.Checked) {
+                groupBoxAdultContent.Enabled = false;
+                radioButtonAllAges.Checked = false;
+                radioButtonHScenes.Checked = false;
+            }
+            else
+                groupBoxAdultContent.Enabled = true;
         }
 
-        private void buttonBrowse_Click(object sender, EventArgs e)
+        private void ButtonBrowse_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
@@ -69,12 +82,13 @@ namespace ONE_Eternal_Patch
             }
         }
 
-        private void buttonPatch_Click(object sender, EventArgs e)
+        private void ButtonPatch_Click(object sender, EventArgs e)
         {
-            string edition;
-            string language;
-            string PS1;
-            string aaContent;
+            Edition edition;
+            Language language;
+            bool PS1Content = false;
+            bool aaContent = false;
+            bool miscContent = false;
             string sepChar = Path.DirectorySeparatorChar.ToString();
             string altChar = Path.AltDirectorySeparatorChar.ToString();
 
@@ -84,34 +98,35 @@ namespace ONE_Eternal_Patch
             }
 
             if (radioButtonVista.Checked)
-                edition = "2";
-            //For the Full Voice Edition and for the Spanish and Chinese languages
+                edition = Edition.VI;
+            //For the Full Voice Edition and for the Spanish, Chinese and Korean languages
             else
-                edition = "1";
+                edition = Edition.FV;
 
             if (radioButtonJapanese.Checked)
-                language = "1";
+                language = Language.JP;
             else if (radioButtonEnglish.Checked)
-                language = "2";
+                language = Language.EN;
             else if (radioButtonSpanish.Checked)
-                language = "3";
+                language = Language.SP;
+            else if (radioButtonChinese.Checked)
+                language = Language.CH;
             else
-                language = "4";
+                language = Language.KR;
 
-            if (radioButtonEnableCGs.Checked)
-                PS1 = "1";
-            else
-                PS1 = "2";
+            if (radioButtonEnablePS1.Checked)
+                PS1Content = true;
 
             if (radioButtonAllAges.Checked)
-                aaContent = "1";
-            else
-                aaContent = "2";
+                aaContent = true;
+
+            if (radioButtonEnableMiscellaneous.Checked)
+                miscContent = true;
 
             richTextBox.Text = "";
             richTextBox.ForeColor = Color.Black;
 
-            ONE_Eternal_Patch.Patch(edition, language, PS1, aaContent, textBox.Text, richTextBox);
+            ONE_Eternal_Patch.Patch(edition, language, PS1Content, aaContent, miscContent, textBox.Text, richTextBox);
             
             //Error: Natsuki is sad
             if (richTextBox.ForeColor == Color.Red)
@@ -122,13 +137,17 @@ namespace ONE_Eternal_Patch
 
         }
 
-        private void richTextBox_TextChanged(object sender, EventArgs e)
+        private void RichTextBox_TextChanged(object sender, EventArgs e)
         {
             //If an error isn't being displayed we make the textbox scrolls
             if (richTextBox.ForeColor == Color.Black)
             {
+                richTextBox.Text += "\n";
                 richTextBox.SelectionStart = richTextBox.Text.Length;
                 richTextBox.ScrollToCaret();
+                //The caret needs to be refreshed twice to prevent the textbox from jumping when text is written on the current line
+                richTextBox.ScrollToCaret();
+                richTextBox.Text = richTextBox.Text.Remove(richTextBox.Text.Length - 1, 1);
             }
         }
     }

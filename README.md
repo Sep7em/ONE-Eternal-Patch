@@ -1,4 +1,4 @@
-ONE Eternal Patch v2.0
+ONE Eternal Patch v2.1
 ======
 
 About
@@ -7,22 +7,26 @@ About
 ONE Eternal Patch is a patch for the visual novel ONE \~Kagayaku Kisetsu e\~.<br/>
 The goal of this patch is to create an enhanced experience by implementing the new content introduced in the PS1 version of the novel.<br/><br/>
 As of right now this patch :<br/>
-- Ports Natsuki's route in Japanese and English (Spanish translation ongoing)<br/>
+- Ports Natsuki's route in Japanese, English and Spanish<br/>
 - Adds the new PS1 CGs<br/>
 - Allows you to partially remove the H-scenes<br/>
+- Adds the in-game hour in the right click menu<br/>
 - Fixes some minor glitches
 
 Future releases will allow players to fully remove H-scenes and will add cool things in the Extra menu.
 
+Note that this version of the patch gives unique ids to the new CGs so if you've saves that were made with older versions of the patch you'll have to unlock again these CGs.
+
 How to use it?
 ---------
 
-1. Launch the "ONE_Eternal_Patch_v2.0.exe" file.<br/>
+1. Launch the "ONE_Eternal_Patch_v2.1.exe" file.<br/>
 2. Select the path of the game.<br/>
 3. Select the language and edition you're using and the content you want to have.<br/>
-4. Click on the Patch button.
+4. (Optional) Put your ONE saves into the sav folder of the game, the patch will convert them.<br/>
+5. Click on the Patch button.
 
-NOTE THAT THE ETERNAL PATCH ISN'T A TRANSLATION PATCH. If you want to have the new content in English, Spanish or Chinese, you need first to apply the corresponding translation patch and then to apply the Eternal Patch.
+NOTE THAT THE ETERNAL PATCH ISN'T A TRANSLATION PATCH. If you want to have the new content in English, Spanish, Chinese or Korean, you need first to apply the corresponding translation patch and then to apply the Eternal Patch.
 
 How to know the edition I am using?
 ---------
@@ -30,7 +34,8 @@ How to know the edition I am using?
 Open the directory of the game, if you've files named:<br/>
 - "One.exe", "one" and "one.lst" then you're using the Full Voice Edition<br/>
 - "lcsebody.exe", "lcsebody1" and "lcsebody1.lst" then you're using the Vista Edition<br/>
-- "One_cn.exe", "one_cn" and "one_cn.lst" then you're using the Chinese translation (with the Full Voice or Vista Edition but it's not important to know the edition with this translation)
+- "One_cn.exe", "one_cn" and "one_cn.lst" then you're using the Chinese translation (with the Full Voice or Vista Edition but it's not important to know the edition with this translation)<br/>
+- "One_kr.exe", "one_kr" and "one_kr.lst" then you're using the Korean translation (edition doesn't matter either)
 
 Saves
 ---------
@@ -52,14 +57,14 @@ If you get the error message "アクセスバイオレーションしてます><
 Compatibility
 ---------
 
-This patch is compatible with the Full Voice Edition and the Vista Edition of the game, it works with the Japanese version and the English, Spanish and Chinese translations.
+This patch is compatible with the Full Voice Edition and the Vista Edition of the game, it works with the Japanese version and the English, Spanish, Chinese and Korean translations.
 
 It shouldn't be necessary to know since the translation patches haven't got any update since a very long time but here are the versions I've used for each of them if you want to know:<br/>
 English: Version 1.5<br/>
 Spanish: Version 1.3<br/>
-Chinese: Version 1.0 (Famille Hanhuazu)
+Chinese: Version 1.0 (Famille Hanhuazu)<br/>
+Korean: Beta Version 1.1 rev.B
 
-I haven't added a compatibility with the Korean patch yet since it's a difficult patch to work with and since it doesn't seem to be finished but it'll be done eventually.<br/>
 The Eternal Patch isn't compatible with the old Chinese patch made by the Key Fans Club as I can't find it online and since the newer patch seems better.
 
 Glitches being fixed
@@ -83,19 +88,20 @@ Why the patch removes the H-scenes only partially?<br/>
 This patch completely removes the H-scenes from the routes of Akane and Mio and it also removes all the HCGs from the gallery.<br/>
 The H-scenes in the 4 other routes are mandatory to get the true ending of each route that's why removing them is harder. The PS1 edition of the game makes a lot of little changes in the story to make their removing coherent with the story and I need to port these changes to remove the H-scenes completely. For the moment, I've replaced all the HCGs by black screens so you'll not see any sexual content but you'll still have to read some.
 
+What is the in-game hour that the patch adds?
+The first editions of ONE being released show the in-game hour it is. For example when you wake up at the beginning it's 8 am, when you bump into Nanase it's 8:20 am, etc. It's updated for nearly every scene. When they've made the Full Voice Edition they forgot to show what hour it is despite the fact that the scripts have all the data to update it so I've added it back to the right click menu. I think that Nanase's last "mini-game" makes more sense with this function.
+
 Where does the new CGs come from?<br/>
 All the CGs were extracted from the second CD of the Limited Edition of ONE, so they're in HQ (640x480 instead of the compressed 640x240 CGs of the first CD). However, I needed to take Natsuki's sprites and the background CG of Misaki's house from the first CD, I used waifu2x to make them look nicer.
 
-I've seen a new CG but it's not unlocked in the gallery?<br/>
-It's normal. It's because for the longest time I didn't know how to create new CG IDs so the new CGs that aren't Natsuki are unlocked when you see the next obligatory CG that you see in the route concerned. This problem should be resolved in the upcoming 2.1 version of the patch.
-
 It is planned to translate Natsuki's route into other languages?<br/>
-A Spanish translation is ongoing. Contact me if you're interested to translate the route into Chinese or Korean.
+No but contact me if you're interested to translate the route into Chinese or Korean.
 
 Author
 ------
 Patch developed by Sep7.<br/>
 Thanks to Tigoris for having accepted the commission of the English translation of Natsuki's route.<br/>
+Thanks to Matematicofisico from the Sharin-sub team for having translated Natsuki's route in Spanish.<br/>
 Thanks to Draconyan for the proofreading.<br/>
 Thanks to Sandman for his opinion on some changes.<br/>
 Thanks to the developers of GARbro to let me use parts of their code.<br/>
